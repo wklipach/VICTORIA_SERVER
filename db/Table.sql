@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=477 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.acceptance_laundry_detail: ~166 rows (приблизительно)
+-- Дамп данных таблицы victoria.acceptance_laundry_detail: ~162 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry_detail` DISABLE KEYS */;
 INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `bitspoiled`) VALUES
 	(106, 1, 1, 1, b'0'),
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `addwork_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.addwork_laundry: ~16 rows (приблизительно)
+-- Дамп данных таблицы victoria.addwork_laundry: ~15 rows (приблизительно)
 /*!40000 ALTER TABLE `addwork_laundry` DISABLE KEYS */;
 INSERT INTO `addwork_laundry` (`id`, `id_shift`, `date_oper`) VALUES
 	(1, 2, '2020-04-19 23:42:17'),
@@ -264,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `addwork_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.addwork_laundry_detail: ~24 rows (приблизительно)
+-- Дамп данных таблицы victoria.addwork_laundry_detail: ~22 rows (приблизительно)
 /*!40000 ALTER TABLE `addwork_laundry_detail` DISABLE KEYS */;
 INSERT INTO `addwork_laundry_detail` (`id`, `id_addwork_laundry`, `id_addwork`, `quant`) VALUES
 	(1, 1, 1, 1),
@@ -899,7 +899,7 @@ CREATE TABLE IF NOT EXISTS `laundry_add_work` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.laundry_add_work: ~7 rows (приблизительно)
+-- Дамп данных таблицы victoria.laundry_add_work: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `laundry_add_work` DISABLE KEYS */;
 INSERT INTO `laundry_add_work` (`id`, `name`, `flagdelete`) VALUES
 	(1, 'помывка полов', b'0'),
@@ -999,17 +999,17 @@ CREATE TABLE IF NOT EXISTS `message` (
   `date_from` datetime DEFAULT NULL,
   `id_position_to` bigint(20) DEFAULT 0,
   `id_branch` bigint(20) DEFAULT 0,
-  `situation` tinytext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `data_situation` tinytext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `situation` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `data_situation` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `summa` int(11) DEFAULT NULL,
   `result_response` int(11) DEFAULT NULL,
   `bit_response` bit(1) DEFAULT NULL,
   `date_response` datetime DEFAULT NULL,
   `id_user_response` int(11) DEFAULT NULL,
-  `comment_response` tinytext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `comment_response` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `flagdelete` bit(1) DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Дамп данных таблицы victoria.message: ~5 rows (приблизительно)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
@@ -1018,7 +1018,9 @@ INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `i
 	(11, 1, 5, '2020-05-06 14:54:25', 1, 3, 'ситуация 2', 'ситуация 2 данные', 200, NULL, NULL, NULL, NULL, NULL, b'0'),
 	(12, 1, 5, '2020-05-06 14:55:19', 1, 3, 'ситуация 3', 'ситуация 3 данные', 200, NULL, NULL, NULL, NULL, NULL, b'0'),
 	(13, 1, 5, '2020-05-06 15:01:13', 2, 3, 'ситуация 4', 'ситуация 4 данные', 600, NULL, NULL, NULL, NULL, NULL, b'0'),
-	(14, 1, 5, '2020-05-07 19:14:53', 3, 3, 'Инструкция всем старшим прачкам', 'Стирать включив машину.', 0, 3, NULL, NULL, NULL, NULL, b'0');
+	(14, 1, 5, '2020-05-07 19:14:53', 3, 3, 'Инструкция всем старшим прачкам', 'Стирать включив машину.', 0, 3, NULL, NULL, NULL, NULL, b'0'),
+	(15, 1, 5, '2020-05-07 21:48:21', 2, 3, 'Ранее ученые сообщали, что пандемия в РФ сократится на 97% к 24 мая, а к 4 июня заболеваемость снизится на 99%. Тем не менее, прогноз был скорректирован из-за резкого увеличения новых случаев заражения в России в конце апреля – начале мая. Согласно графику ученых, фаза плато по-прежнему не достигнута.\n\nПо состоянию на 6 мая, в России коронавирусом заразились свыше 165 тыс. человек (+6,8%) в 85 регионах. Согласно данным Университета Джона Хопкинса, в Германии в настоящий момент 167 тыс. случаев Covid-19, во Франции — 169,6 тыс. За последние сутки в России было подтверждено 10,6 тыс. новых случаев. Выздоровели на данный момент 21,3 тыс. человек, 1,5 тыс. умерли.\n\nДата окончания пандемии в мире в целом также была скорректирована сингапурскими учеными из-за роста новых случаев заражения вопреки прогнозам. Теперь она назначена на 20 декабря.\n\nНа данный момент в мире подтверждено свыше 3,66 млн случаев заражения Covid-19, скончались 256 тыс. человек.', 'Ранее ученые сообщали, что пандемия в РФ сократится на 97% к 24 мая, а к 4 июня заболеваемость снизится на 99%. Тем не менее, прогноз был скорректирован из-за резкого увеличения новых случаев заражения в России в конце апреля – начале мая. Согласно графику ученых, фаза плато по-прежнему не достигнута.\n\nПо состоянию на 6 мая, в России коронавирусом заразились свыше 165 тыс. человек (+6,8%) в 85 регионах. Согласно данным Университета Джона Хопкинса, в Германии в настоящий момент 167 тыс. случаев Covid-19, во Франции — 169,6 тыс. За последние сутки в России было подтверждено 10,6 тыс. новых случаев. Выздоровели на данный момент 21,3 тыс. человек, 1,5 тыс. умерли.\n\nДата окончания пандемии в мире в целом также была скорректирована сингапурскими учеными из-за роста новых случаев заражения вопреки прогнозам. Теперь она назначена на 20 декабря.\n\nНа данный момент в мире подтверждено свыше 3,66 млн случаев заражения Covid-19, скончались 256 тыс. человек.', 300, 0, NULL, NULL, NULL, NULL, b'0'),
+	(16, 1, 5, '2020-05-07 21:58:20', 3, 3, '1', '1', 45, 0, NULL, NULL, NULL, NULL, b'0');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_image
@@ -1030,7 +1032,7 @@ CREATE TABLE IF NOT EXISTS `message_image` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message_image: ~3 rows (приблизительно)
+-- Дамп данных таблицы victoria.message_image: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `message_image` DISABLE KEYS */;
 INSERT INTO `message_image` (`id`, `id_message`, `name`) VALUES
 	(31, 10, '10_1.jpg'),
@@ -1126,7 +1128,7 @@ CREATE TABLE IF NOT EXISTS `repair_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.repair_laundry: ~20 rows (приблизительно)
+-- Дамп данных таблицы victoria.repair_laundry: ~19 rows (приблизительно)
 /*!40000 ALTER TABLE `repair_laundry` DISABLE KEYS */;
 INSERT INTO `repair_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 2, 4, '2020-04-14 00:19:11', 0),
@@ -1161,7 +1163,7 @@ CREATE TABLE IF NOT EXISTS `repair_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.repair_laundry_detail: ~65 rows (приблизительно)
+-- Дамп данных таблицы victoria.repair_laundry_detail: ~63 rows (приблизительно)
 /*!40000 ALTER TABLE `repair_laundry_detail` DISABLE KEYS */;
 INSERT INTO `repair_laundry_detail` (`id`, `id_repair`, `id_nom`, `quant`) VALUES
 	(25, 1, 1, 2),
@@ -1792,7 +1794,7 @@ CREATE TABLE IF NOT EXISTS `taddworkbranch` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.taddworkbranch: ~3 rows (приблизительно)
+-- Дамп данных таблицы victoria.taddworkbranch: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `taddworkbranch` DISABLE KEYS */;
 INSERT INTO `taddworkbranch` (`id`, `id_branch`, `id_addwork`, `price`, `flagdelete`) VALUES
 	(1, 3, 6, 13, b'0'),
@@ -1992,7 +1994,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.warehouse_laundry: ~13 rows (приблизительно)
+-- Дамп данных таблицы victoria.warehouse_laundry: ~12 rows (приблизительно)
 /*!40000 ALTER TABLE `warehouse_laundry` DISABLE KEYS */;
 INSERT INTO `warehouse_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 2, 55, '2020-04-18 18:41:51', 1),
@@ -2021,7 +2023,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=189 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.warehouse_laundry_detail: ~74 rows (приблизительно)
+-- Дамп данных таблицы victoria.warehouse_laundry_detail: ~72 rows (приблизительно)
 /*!40000 ALTER TABLE `warehouse_laundry_detail` DISABLE KEYS */;
 INSERT INTO `warehouse_laundry_detail` (`id`, `id_warehouse`, `id_nom`, `quant`, `bitadd`) VALUES
 	(76, 1, 3, 1, b'1'),
@@ -2111,7 +2113,7 @@ CREATE TABLE IF NOT EXISTS `washing_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.washing_laundry: ~8 rows (приблизительно)
+-- Дамп данных таблицы victoria.washing_laundry: ~7 rows (приблизительно)
 /*!40000 ALTER TABLE `washing_laundry` DISABLE KEYS */;
 INSERT INTO `washing_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 2, 1, '2020-04-17 22:03:43', 1),
@@ -2134,7 +2136,7 @@ CREATE TABLE IF NOT EXISTS `washing_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.washing_laundry_detail: ~52 rows (приблизительно)
+-- Дамп данных таблицы victoria.washing_laundry_detail: ~50 rows (приблизительно)
 /*!40000 ALTER TABLE `washing_laundry_detail` DISABLE KEYS */;
 INSERT INTO `washing_laundry_detail` (`id`, `id_washing`, `id_nom`, `quant`) VALUES
 	(2, 1, 3, 1),
