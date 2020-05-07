@@ -111,8 +111,10 @@ async function asyncLastMessage(id_user, id_branch) {
 
 
 
-async function asyncMessageList(id_position_from, id_position_to, date_begin, date_end, id_branch) {
-    const sSQL =
+async function asyncMessageList(id_user, id_branch, id_position, date_begin, date_end) {
+
+    const sSQL = "call select_message (?,?,?,?,?)"
+/*
     " select d.id, d.id_position, p.name as position_name, d.date_from, d.little_situation, d.summa, d.InputOutput from ( "+
     " SELECT id, id_position_to as id_position,  date_from, SUBSTRING(situation, 1, 50)  as  little_situation, summa, 0 as InputOutput "+
     " FROM message WHERE id_position_from = ? and  id_branch= ? "+
@@ -120,11 +122,11 @@ async function asyncMessageList(id_position_from, id_position_to, date_begin, da
     " SELECT id, id_position_from as id_position, date_from, SUBSTRING(situation, 1, 50)  as little_situation, summa, 1 as InputOutput "+
     " FROM message WHERE id_position_to = ?  and id_branch= ? "+
     ") d, tposition p where p.id = d.id_position and Date(d.date_from) >= Date(?) and Date(d.date_from) <= Date(?) ";
+ */
     let conn;
     try {
-        console.log(id_position_from, id_branch, id_position_to, id_branch, date_begin, date_end);
         conn = await pool.getConnection();
-        const rows = await conn.query(sSQL, [id_position_from, id_branch, id_position_to, id_branch, date_begin, date_end]);
+        const rows = await conn.query(sSQL, [id_user, id_branch, id_position, date_begin, date_end]);
         return JSON.stringify(rows);
     } catch (err) {
         throw err;
@@ -136,8 +138,8 @@ async function asyncMessageList(id_position_from, id_position_to, date_begin, da
 router.get('/', async function(req, res, next) {
 
         if (req.query.get_message_list) {
-            const result = await asyncMessageList(req.query.id_position_from, req.query.id_position_to,
-                                                  req.query.date_begin, req.query.date_end, req.query.id_branch);
+            const result = await asyncMessageList(req.query.id_user, req.query.id_branch,req.query.id_position,
+                                                  req.query.date_begin, req.query.date_end );
             res.send(result);
         }
 
@@ -174,13 +176,20 @@ router.get('/', async function(req, res, next) {
 
 });
 
-async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa) {
-    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, date_from) " +
-                 " values (?,?,?,?,?,?,?, now())";
+async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_instruction) {
+    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, date_from, result_response) " +
+                 " values (?,?,?,?,?,?,?, now(), ?)";
+
+    let int_response = 0;
+    if (int_instruction === 1) {
+        int_response = 3;
+    }
+
+
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa]);
+        const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_response]);
         return JSON.stringify(rows);
     } catch (err) {
         throw err;
@@ -199,7 +208,8 @@ router.post('/', async function(req, res) {
                                              req.body.id_branch,
                                              req.body.situation,
                                              req.body.data_situation,
-                                             req.body.summa);
+                                             req.body.summa,
+                                             req.body.int_instruction);
 
         res.send(result);
     }
