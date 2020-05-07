@@ -194,17 +194,20 @@ router.get('/', async function(req, res, next) {
 });
 
 async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_instruction) {
-    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, date_from, result_response) " +
-                 " values (?,?,?,?,?,?,?, now(), ?)";
+    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, result_response, date_from) " +
+                 " values (?,?,?,?,?,?,?,?, now())";
 
     let int_response = 0;
     if (int_instruction === 1) {
         int_response = 3;
     }
 
-
     let conn;
     try {
+
+        situation = situation.replace(/[']/g, "\'");
+        data_situation = data_situation.replace(/[']/g, "\'");
+
         conn = await pool.getConnection();
         const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_response]);
         return JSON.stringify(rows);
