@@ -109,7 +109,19 @@ async function asyncLastMessage(id_user, id_branch) {
 }
 
 
-
+async function asyncInstructionList(id_user, id_branch, id_position) {
+    const sSQL = "call select_instruction (?,?,?)";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_user, id_branch, id_position]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
 
 async function asyncMessageList(id_user, id_branch, id_position, date_begin, date_end) {
 
@@ -137,11 +149,16 @@ async function asyncMessageList(id_user, id_branch, id_position, date_begin, dat
 
 router.get('/', async function(req, res, next) {
 
-        if (req.query.get_message_list) {
+    if (req.query.get_instruction_list) {
+        const result = await asyncInstructionList(req.query.id_user, req.query.id_branch, req.query.id_position);
+        res.send(result);
+    }
+
+     if (req.query.get_message_list) {
             const result = await asyncMessageList(req.query.id_user, req.query.id_branch,req.query.id_position,
                                                   req.query.date_begin, req.query.date_end );
             res.send(result);
-        }
+     }
 
     if (req.query.get_position_user) {
         const result = await asyncPositionUser(req.query.id_user, req.query.id_branch);
