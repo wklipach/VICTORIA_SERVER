@@ -54,7 +54,7 @@ async function asyncMessageImageList(id_message) {
 async function asyncMessage(id_message) {
     const sSQL =
         " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation, m.summa, "+
-        " b.name as branch_name, p.name as position_name, m.result_response, m.comment_response "+
+        " b.name as branch_name, p.name as position_name, ifnull(m.result_response, 0) as result_response, m.comment_response "+
         " from message m "+
         " left join tposition p on p.id=m.id_position_to "+
         " left join tbranch b on b.id = m.id_branch "+
@@ -109,6 +109,20 @@ async function asyncLastMessage(id_user, id_branch) {
 }
 
 
+async function asyncSelectUnreadCount(id_user, id_branch, date_begin, date_end) {
+    const sSQL = "call select_unread_count (?,?,?,?)";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_user, id_branch, date_begin, date_end]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
 async function asyncInstructionList(id_user, id_branch, id_position) {
     const sSQL = "call select_instruction (?,?,?)";
     let conn;
@@ -148,6 +162,13 @@ async function asyncMessageList(id_user, id_branch, id_position, date_begin, dat
 }
 
 router.get('/', async function(req, res, next) {
+
+
+    // select_unread_count
+    if (req.query.get_unread_count) {
+        const result = await asyncSelectUnreadCount(req.query.id_user, req.query.id_branch, req.query.date_begin, req.query.date_end);
+        res.send(result);
+    }
 
     if (req.query.get_instruction_list) {
         const result = await asyncInstructionList(req.query.id_user, req.query.id_branch, req.query.id_position);
@@ -193,6 +214,41 @@ router.get('/', async function(req, res, next) {
 
 });
 
+async function asyncReadMessage(id_message, id_user) {
+    const sSQL = " insert message_read (id_message, id_user) values (?, ?) ";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_message, id_user]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
+async function asyncUpdateMessage(id_message, id_user, summa, comment_response, int_resp) {
+    const sSQL = " update message set id_user_response=?, summa=?, comment_response=?, result_response=?, " +
+                 " bit_response=1, date_response= now() "+
+                 " where id = ? ";
+
+    let conn;
+    try {
+
+        comment_response = comment_response.replace(/[']/g, "\'");
+
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_user, summa, comment_response, int_resp, id_message]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
+
 async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_instruction) {
     const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, result_response, date_from) " +
                  " values (?,?,?,?,?,?,?,?, now())";
@@ -233,6 +289,28 @@ router.post('/', async function(req, res) {
 
         res.send(result);
     }
+
+
+    if (req.body.read_message) {
+        const result = await asyncReadMessage(req.body.id_message, req.body.id_user);
+        res.send(result);
+    }
+
+
+
+
+    if (req.body.update_message) {
+        const result = await asyncUpdateMessage(
+            req.body.id_message,
+            req.body.id_user,
+            req.body.summa,
+            req.body.comment_response,
+            req.body.int_resp);
+
+        res.send(result);
+    }
+
+
 
 });
 

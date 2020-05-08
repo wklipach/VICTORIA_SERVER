@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 -- Хост:                         127.0.0.1
 -- Версия сервера:               10.4.12-MariaDB - mariadb.org binary distribution
 -- Операционная система:         Win64
@@ -1009,18 +1009,19 @@ CREATE TABLE IF NOT EXISTS `message` (
   `comment_response` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `flagdelete` bit(1) DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message: ~5 rows (приблизительно)
+-- Дамп данных таблицы victoria.message: ~8 rows (приблизительно)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
 INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `id_position_to`, `id_branch`, `situation`, `data_situation`, `summa`, `result_response`, `bit_response`, `date_response`, `id_user_response`, `comment_response`, `flagdelete`) VALUES
 	(10, 1, 2, '2020-05-06 14:50:35', 5, 3, 'первая ситуация', 'вторая ситуация', 100, NULL, NULL, NULL, NULL, NULL, b'0'),
 	(11, 1, 5, '2020-05-06 14:54:25', 1, 3, 'ситуация 2', 'ситуация 2 данные', 200, NULL, NULL, NULL, NULL, NULL, b'0'),
-	(12, 1, 5, '2020-05-06 14:55:19', 1, 3, 'ситуация 3', 'ситуация 3 данные', 200, NULL, NULL, NULL, NULL, NULL, b'0'),
+	(12, 1, 5, '2020-05-06 14:55:19', 1, 3, 'ситуация 3', 'ситуация 3 данные', 200, 1, b'1', '2020-05-07 23:45:58', 1, 'положительный ответ на 3 ситуацию', b'0'),
 	(13, 1, 5, '2020-05-06 15:01:13', 2, 3, 'ситуация 4', 'ситуация 4 данные', 600, NULL, NULL, NULL, NULL, NULL, b'0'),
 	(14, 1, 5, '2020-05-07 19:14:53', 3, 3, 'Инструкция всем старшим прачкам', 'Стирать включив машину.', 0, 3, NULL, NULL, NULL, NULL, b'0'),
 	(15, 1, 5, '2020-05-07 21:48:21', 2, 3, 'Ранее ученые сообщали, что пандемия в РФ сократится на 97% к 24 мая, а к 4 июня заболеваемость снизится на 99%. Тем не менее, прогноз был скорректирован из-за резкого увеличения новых случаев заражения в России в конце апреля – начале мая. Согласно графику ученых, фаза плато по-прежнему не достигнута.\n\nПо состоянию на 6 мая, в России коронавирусом заразились свыше 165 тыс. человек (+6,8%) в 85 регионах. Согласно данным Университета Джона Хопкинса, в Германии в настоящий момент 167 тыс. случаев Covid-19, во Франции — 169,6 тыс. За последние сутки в России было подтверждено 10,6 тыс. новых случаев. Выздоровели на данный момент 21,3 тыс. человек, 1,5 тыс. умерли.\n\nДата окончания пандемии в мире в целом также была скорректирована сингапурскими учеными из-за роста новых случаев заражения вопреки прогнозам. Теперь она назначена на 20 декабря.\n\nНа данный момент в мире подтверждено свыше 3,66 млн случаев заражения Covid-19, скончались 256 тыс. человек.', 'Ранее ученые сообщали, что пандемия в РФ сократится на 97% к 24 мая, а к 4 июня заболеваемость снизится на 99%. Тем не менее, прогноз был скорректирован из-за резкого увеличения новых случаев заражения в России в конце апреля – начале мая. Согласно графику ученых, фаза плато по-прежнему не достигнута.\n\nПо состоянию на 6 мая, в России коронавирусом заразились свыше 165 тыс. человек (+6,8%) в 85 регионах. Согласно данным Университета Джона Хопкинса, в Германии в настоящий момент 167 тыс. случаев Covid-19, во Франции — 169,6 тыс. За последние сутки в России было подтверждено 10,6 тыс. новых случаев. Выздоровели на данный момент 21,3 тыс. человек, 1,5 тыс. умерли.\n\nДата окончания пандемии в мире в целом также была скорректирована сингапурскими учеными из-за роста новых случаев заражения вопреки прогнозам. Теперь она назначена на 20 декабря.\n\nНа данный момент в мире подтверждено свыше 3,66 млн случаев заражения Covid-19, скончались 256 тыс. человек.', 300, 0, NULL, NULL, NULL, NULL, b'0'),
-	(16, 1, 5, '2020-05-07 21:58:20', 3, 3, '1', '1', 45, 0, NULL, NULL, NULL, NULL, b'0');
+	(16, 1, 5, '2020-05-07 21:58:20', 3, 3, '1', '1', 45, 0, b'1', '2020-05-08 10:48:04', 1, '11', b'0'),
+	(17, 1, 5, '2020-05-08 10:56:45', 2, 3, 'Новая записка начальнику участка', 'Данные Новая записка начальнику участка', 400, 0, NULL, NULL, NULL, NULL, b'0');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_image
@@ -1052,9 +1053,9 @@ CREATE TABLE IF NOT EXISTS `message_read` (
 -- Дамп данных таблицы victoria.message_read: ~3 rows (приблизительно)
 /*!40000 ALTER TABLE `message_read` DISABLE KEYS */;
 INSERT INTO `message_read` (`id`, `id_message`, `id_user`) VALUES
-	(1, 12, 1),
-	(2, 12, 2),
-	(3, 10, 5);
+	(1, 16, 1),
+	(2, 14, 1),
+	(3, 17, 1);
 /*!40000 ALTER TABLE `message_read` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.payment_laundry
@@ -1253,23 +1254,26 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `select_instruction`(
 	IN `var_id_user` INT,
 	IN `var_id_branch` INT,
 	IN `var_id_position` INT
+
+
 )
 BEGIN
 
-     select d.id, d.id_position, p.name as position_name, d.date_from, 
+     select d.id, d.result_response, d.id_position, p.name as position_name, d.date_from, 
 	         d.little_situation, d.summa, d.InputOutput, not not not ifnull(unread,0) as unread
 	  from ( 
-     SELECT id, id_position_to as id_position,  date_from, SUBSTRING(situation, 1, 50)  as  little_situation, summa, 0 as InputOutput 
+     SELECT id, result_response, id_position_to as id_position,  date_from, SUBSTRING(situation, 1, 50)  as  little_situation, summa, 0 as InputOutput 
      FROM message WHERE id_position_from = var_id_position and  id_branch = var_id_branch and ifnull(flagdelete,0)=0 and ifnull(result_response,0)=3
      union all 
-     SELECT id, id_position_from as id_position, date_from, SUBSTRING(situation, 1, 50)  as little_situation, summa, 1 as InputOutput 
+     SELECT id, result_response, id_position_from as id_position, date_from, SUBSTRING(situation, 1, 50)  as little_situation, summa, 1 as InputOutput 
      FROM message WHERE id_position_to = var_id_position  and id_branch= var_id_branch and ifnull(flagdelete,0)=0 and ifnull(result_response,0)=3
 	  ) d 
      LEFT JOIN (
      SELECT id_message, count(id) AS unread
      FROM message_read where id_user=var_id_user GROUP BY id_message) mr ON (d.id = mr.id_message), 
 	  tposition p 
-	 where p.id = d.id_position; 
+	 where p.id = d.id_position
+ 	 order by d.date_from desc; 
 
 END//
 DELIMITER ;
@@ -1286,15 +1290,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `select_message`(
 
 
 
+
+
+
 )
 BEGIN
-     select d.id, d.id_position, p.name as position_name, d.date_from, 
+     select d.id, d.result_response, d.id_position, p.name as position_name, d.date_from, 
 	         d.little_situation, d.summa, d.InputOutput, not not not ifnull(unread,0) as unread
 	  from ( 
-     SELECT id, id_position_to as id_position,  date_from, SUBSTRING(situation, 1, 50)  as  little_situation, summa, 0 as InputOutput 
+     SELECT id, result_response, id_position_to as id_position,  date_from, SUBSTRING(situation, 1, 50)  as  little_situation, summa, 0 as InputOutput 
      FROM message WHERE id_position_from = var_id_position and  id_branch = var_id_branch and ifnull(flagdelete,0)=0 and ifnull(result_response,0)<>3
      union all 
-     SELECT id, id_position_from as id_position, date_from, SUBSTRING(situation, 1, 50)  as little_situation, summa, 1 as InputOutput 
+     SELECT id, result_response, id_position_from as id_position, date_from, SUBSTRING(situation, 1, 50)  as little_situation, summa, 1 as InputOutput 
      FROM message WHERE id_position_to = var_id_position  and id_branch= var_id_branch and ifnull(flagdelete,0)=0 and ifnull(result_response,0)<>3
 	  ) d 
      LEFT JOIN (
@@ -1302,7 +1309,8 @@ BEGIN
      FROM message_read where id_user=var_id_user GROUP BY id_message) mr ON (d.id = mr.id_message), 
 	  tposition p 
 	 where p.id = d.id_position 
-	 and Date(d.date_from) >= Date(var_date_begin) and Date(d.date_from) <= Date(var_date_end); 
+	 and Date(d.date_from) >= Date(var_date_begin) and Date(d.date_from) <= Date(var_date_end)
+	 order by d.date_from desc; 
 
 END//
 DELIMITER ;
@@ -1678,6 +1686,28 @@ select sum(ifnull(addwork,0)) as summa_addwork,
  where id_user = var_id_user and id_branch= var_id_branch and DATE(pay_date) >= t_date_begin and DATE(pay_date) <= t_date_end
  group by week(pay_date,3);
  
+END//
+DELIMITER ;
+
+-- Дамп структуры для процедура victoria.select_unread_count
+DROP PROCEDURE IF EXISTS `select_unread_count`;
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_unread_count`(
+	IN `var_id_user` INT,
+	IN `var_id_branch` INT,
+	IN `var_date_begin` VARCHAR(60),
+	IN `var_date_end` VARCHAR(60)
+)
+BEGIN
+
+declare t_id_position int default(0);
+set t_id_position = ( select max(id_position) from tuserbranch where id_branch= var_id_branch and id_user= var_id_user and ifnull(flagdelete, 0)=0);
+
+select count(id) as unread_message from message 
+where (id_position_from=t_id_position or id_position_to=t_id_position) 
+       and Date(date_from) >= Date(var_date_begin) and Date(date_from) <= Date(var_date_end) and
+       id not in (select id_message from message_read where id_user = var_id_user);
+
 END//
 DELIMITER ;
 
@@ -2311,6 +2341,3 @@ DROP VIEW IF EXISTS `v_laundry_nomenclature`;
 DROP TABLE IF EXISTS `v_laundry_nomenclature`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_laundry_nomenclature` AS select `ln`.`id_nom` AS `id_nom`,`lb`.`name` AS `name`,`lt`.`type` AS `type`,`lb`.`id_lbn` AS `id_lbn`,`lt`.`id_ltp` AS `id_ltp` from ((`laundry_nomenclature` `ln` left join `laundry_basenom` `lb` on(`lb`.`id_lbn` = `ln`.`id_lbn`)) left join `laundry_typenl` `lt` on(`lt`.`id_ltp` = `ln`.`id_ltp`)) ;
 
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
