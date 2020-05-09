@@ -131,7 +131,7 @@ async function asyncAddWork() {
 
 async function asyncWashhouseAddress(id_branch) {
 
-   const sSQL = "select * from laundry_address_shipment order by id_address";
+   const sSQL = "select * from laundry_address_shipment where ifnull(flagdelete,0)=0  order by id_address";
 /*
             " select a.*, b.name as branch_name from laundry_address_shipment a "+
             " left join tbranch b on b.id = a.id_branch "+

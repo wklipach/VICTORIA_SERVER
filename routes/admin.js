@@ -154,6 +154,33 @@ async function asyncGetBranchInfo(id_branch) {
     }
 }
 
+
+
+async function asyncGetAllUsers() {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        let sql =
+        " SELECT id, nick, surname, name, filial from ( "+
+        " SELECT u.id, u.nick, u.surname, u.name, 1 as filial "+
+        " FROM tuser u where u.id in (select id_user from tuserbranch t) "+
+        " and IFNULL(u.bitdelete,0) = 0 "+
+        "union all "+
+        " SELECT u.id, u.nick, u.surname, u.name, 0 as filial "+
+        " FROM tuser u where u.id not in (select id_user from tuserbranch t) "+
+        " and IFNULL(u.bitdelete,0)=0 "+
+        " )  as d "+
+        " order by d.nick asc ";
+
+        const rows = await conn.query(sql);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
 async function asyncGetUsers(id_branch) {
     let conn;
     try {
@@ -463,6 +490,12 @@ router.get('/', async function(req, res, next) {
         const result = await asyncGetUsers(req.query.id_branch);
         res.send(result);
     }
+
+    if (req.query.get_all_users) {
+        const result = await asyncGetAllUsers();
+        res.send(result);
+    }
+
 
     if (req.query.get_branch_info) {
         const result = await asyncGetBranchInfo(req.query.get_branch_info);
