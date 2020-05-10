@@ -1,10 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var pool=require('../connections/dbconnection');
-var sql_acceptance = require('../query/sql_report_acceptance');
-var sql_warehouse = require('../query/sql_report_warehouse');
-var sql_washing = require('../query/sql_report_washing');
-var sql_repair = require('../query/sql_report_repair');
 
 async function asyncAddress(id_address) {
     const sSQL = "select address from laundry_address_shipment where id_address = ?";

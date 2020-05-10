@@ -22,9 +22,10 @@ async function asyncSelectCheckPositionBranch(id_branch) {
     try {
         conn = await pool.getConnection();
 
-        let sql = ' select p.id, p.name from tposition p, tpositionbranch tpb where tpb.id_position=p.id and '+
-            ' ifnull(tpb.flagdelete,0)=0 and ifnull(p.flagdelete,0)=0 and '+
-            ' tpb.id_branch = ? order by p.id asc ';
+        let sql =
+            " select p.id, p.name from tposition p, tpositionbranch tpb where tpb.id_position=p.id and " +
+            " ifnull(tpb.flagdelete,0)=0 and ifnull(p.flagdelete,0)=0 and " +
+            " tpb.id_branch = ? order by p.id asc ";
 
 
         const rows = await conn.query(sql, [id_branch]);
@@ -240,7 +241,14 @@ async function asyncUpdateMessage(id_message, id_user, summa, comment_response, 
 
         conn = await pool.getConnection();
         const rows = await conn.query(sSQL, [id_user, summa, comment_response, int_resp, id_message]);
-        return JSON.stringify(rows);
+
+
+        // удаляем из прочитанного всех кроме отправителя, который прочел изначально т.к. отправитель
+        if (rows) {
+            const deleteRow = await conn.query('delete from message_read where id_message = ? and id_user <> ?', [id_message, id_user]);
+            return JSON.stringify(deleteRow);
+        }
+
     } catch (err) {
         throw err;
     } finally {
@@ -266,7 +274,13 @@ async function asyncNewMessage(id_user_from, id_position_from, id_position_to, i
 
         conn = await pool.getConnection();
         const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_response]);
-        return JSON.stringify(rows);
+
+                       // вставляем отправителя в прочитавшие письмо
+                       if (rows.insertId) {
+                           const insertRow = await conn.query('insert message_read (id_message, id_user) value (?, ?)', [rows.insertId, id_user_from]);
+                           // из функции возвращаем инсерт-ид от ГЛАВНОГО запроса
+                           return JSON.stringify(rows);
+                       }
     } catch (err) {
         throw err;
     } finally {

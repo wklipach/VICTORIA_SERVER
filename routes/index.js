@@ -15,8 +15,6 @@ const getIpAddressFromRequest = (request) => {
 
 
 router.get('/', function(req, res, next) {
-
-  console.log('getIpAddressFromRequest', getIpAddressFromRequest(req));
   res.render('index', { title: 'Express '+getIpAddressFromRequest(req)});
 });
 

@@ -56,13 +56,7 @@ async function asyncUser(sUser) {
         if (sUser != null) sql = "call get_user_login(?)";
 
         const rows = await conn.query(sql, [sUser]);
-        // rows: [ {val: 1}, meta: ... ]
-
-        console.log(rows);
         return JSON.stringify(rows);
-
-        //const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-        // res: { affectedRows: 1, insertId: 1, warningStatus: 0 }
 
     } catch (err) {
         throw err;
@@ -154,7 +148,6 @@ async function asyncIpAddress(id_user, id_branch, req) {
         if (rows[0]) {
             clientIP = getIpAddressFromRequest(req);
             dbIP = rows[0].ip;
-            console.log('clientIP =', clientIP, 'dbIP=', dbIP);
             // -1 если не нашла
             const intSucc = clientIP.toLowerCase().trim().indexOf(dbIP.toLowerCase().trim()); // 7
             if (intSucc === -1) bSucc = false;
@@ -325,7 +318,7 @@ async function asyncUpdateAvatar(id_user, avatar_name, Avatar) {
                 // сохраняем файл на диске
                 if (CreateMyDir()) {
                     var data = Avatar.replace('{"value":', "").replace('}', "");
-                    console.log('data',data);
+
                     fs.writeFile(appRoot + '/public/images/useravatar/' + sNewFileName, data, 'base64', function (err) {
                         if (err) console.log('errSaveAvatarToDisc', err);
                         if (!err) console.log('File saved.')
@@ -347,7 +340,7 @@ async function asyncUpdateImageMessage(id_message, id_prefix, message_image, ext
     let conn;
     try {
 
-        conn = await pool.getConnection();
+       conn = await pool.getConnection();
          //создаем новое имя файла
         let sNewFileName = id_message + '_' + id_prefix;
         if (ext !== undefined) {
@@ -359,9 +352,9 @@ async function asyncUpdateImageMessage(id_message, id_prefix, message_image, ext
 
                 // сохраняем файл на диске
                 if (CreateMessagesDir()) {
-                    // var data = message_image.replace('{"value":', "").replace('}', "");
+
                     const message_data =  decodeBase64Image(message_image)
-                    // console.log('data message_image', data);
+
                     fs.writeFile(appRoot + '/public/images/messages/' + sNewFileName, message_data.data, 'base64', function (err) {
                         if (err) console.log('errSaveMessagesToDisc', err);
                         if (!err) console.log('File saved.')
@@ -437,9 +430,6 @@ async function asyncUserUpdate(user, id_user) {
     try {
         conn = await pool.getConnection();
 
-
-        console.log('gender=', user.gender);
-
         const sSql = ' update tuser set name=?, surname=?, patronymic=?, zip=?, address=?, ' +
                      ' phone1=?, phone2=?, email=?, gender=?, datebirth = FROM_UNIXTIME(0) + INTERVAL ?/1000 SECOND where id=?';
         const Param = [user.inputName, user.inputLastName, user.inputPatronymic, user.inputZip, user.inputAddress,
@@ -458,7 +448,6 @@ async function asyncUserUpdate(user, id_user) {
 router.post('/', async function(req, res) {
 
     if (req.body.post_user) {
-        // console.log(req.body.post_user);
         const result = await  asyncUserUpdate(req.body.post_user, req.body.id_user);
         res.send(result);
     }

@@ -21,7 +21,6 @@ async function asyncNewPasswordSend(hash, email, pwd) {
             let sendRes='succesfull send';
             if (err) {
                 sendRes='error send';
-                console.log('valRes err',err)
             };
              return JSON.stringify(sendRes);
         });
@@ -46,10 +45,6 @@ router.post('/', async function(req, res) {
 
 
  function bSend (sTo, sPwd, callback)  {
-
-     console.log('sTo=', sTo);
-     console.log('sPwd=', sPwd);
-
      var message	= {
         from:	connectionSMTP.userForFromLetter,
         to:		sTo,
