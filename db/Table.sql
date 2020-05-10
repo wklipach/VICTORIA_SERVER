@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 -- Хост:                         127.0.0.1
 -- Версия сервера:               10.4.12-MariaDB - mariadb.org binary distribution
 -- Операционная система:         Win64
@@ -827,10 +827,14 @@ CREATE TABLE IF NOT EXISTS `message` (
   `comment_response` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `flagdelete` bit(1) DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message: ~7 rows (приблизительно)
+-- Дамп данных таблицы victoria.message: ~0 rows (приблизительно)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
+INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `id_position_to`, `id_branch`, `situation`, `data_situation`, `summa`, `result_response`, `bit_response`, `date_response`, `id_user_response`, `comment_response`, `flagdelete`) VALUES
+	(157, 6, 1, '2020-05-11 00:13:36', 2, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', 2950, 0, NULL, NULL, NULL, NULL, b'0'),
+	(158, 6, 1, '2020-05-11 00:20:24', 2, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', 1000, 0, NULL, NULL, NULL, NULL, b'0'),
+	(159, 1, 2, '2020-05-11 00:25:15', 1, 3, 'Инструкция о включении стиральной машины.', 'Подробности на фото.', 0, 3, NULL, NULL, NULL, NULL, b'0');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_image
@@ -840,10 +844,20 @@ CREATE TABLE IF NOT EXISTS `message_image` (
   `id_message` int(11) DEFAULT NULL,
   `name` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message_image: ~8 rows (приблизительно)
+-- Дамп данных таблицы victoria.message_image: ~0 rows (приблизительно)
 /*!40000 ALTER TABLE `message_image` DISABLE KEYS */;
+INSERT INTO `message_image` (`id`, `id_message`, `name`) VALUES
+	(62, 157, '157_1.jpg'),
+	(63, 157, '157_2.jpg'),
+	(64, 157, '157_3.jpg'),
+	(67, 158, '158_3.jpg'),
+	(66, 158, '158_2.jpg'),
+	(65, 158, '158_1.jpg'),
+	(69, 159, '159_3.jpg'),
+	(68, 159, '159_1.jpg'),
+	(70, 159, '159_2.jpg');
 /*!40000 ALTER TABLE `message_image` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_read
@@ -853,10 +867,14 @@ CREATE TABLE IF NOT EXISTS `message_read` (
   `id_message` bigint(20) DEFAULT NULL,
   `id_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message_read: ~11 rows (приблизительно)
+-- Дамп данных таблицы victoria.message_read: ~0 rows (приблизительно)
 /*!40000 ALTER TABLE `message_read` DISABLE KEYS */;
+INSERT INTO `message_read` (`id`, `id_message`, `id_user`) VALUES
+	(37, 157, 6),
+	(38, 158, 6),
+	(39, 159, 1);
 /*!40000 ALTER TABLE `message_read` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.payment_laundry
@@ -1466,7 +1484,7 @@ CREATE TABLE IF NOT EXISTS `shift` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.shift: ~41 rows (приблизительно)
+-- Дамп данных таблицы victoria.shift: ~33 rows (приблизительно)
 /*!40000 ALTER TABLE `shift` DISABLE KEYS */;
 INSERT INTO `shift` (`id`, `id_user`, `date_begin`, `date_end`, `id_branch`) VALUES
 	(1, 1, '2020-01-15 09:09:00', '2020-01-15 19:02:00', 3),
@@ -1494,22 +1512,11 @@ INSERT INTO `shift` (`id`, `id_user`, `date_begin`, `date_end`, `id_branch`) VAL
 	(24, 1, '2020-05-04 09:58:04', '2020-05-04 21:19:10', 3),
 	(25, 1, '2020-05-06 09:19:12', '2020-05-06 18:19:15', 3),
 	(26, 1, '2020-05-07 09:54:22', '2020-05-07 21:01:34', 3),
-	(27, 1, '2020-05-08 09:01:36', '2020-05-09 15:59:21', 3),
-	(28, 4, '2020-05-09 10:00:00', '2020-05-09 15:00:00', 1),
-	(29, 5, '2020-05-09 10:00:00', '2020-05-09 16:00:00', 1),
-	(30, 6, '2020-05-09 10:00:00', '2020-05-09 17:00:00', 3),
-	(31, 7, '2020-05-09 10:00:00', '2020-05-09 18:00:00', 3),
-	(32, 1, '2020-05-09 22:50:44', '2020-05-09 23:06:04', 3),
-	(33, 7, '2020-05-09 23:15:58', '2020-05-09 23:23:06', 3),
-	(34, 6, '2020-05-09 23:23:37', '2020-05-09 23:24:58', 3),
-	(35, 6, '2020-05-09 23:25:02', '2020-05-09 23:26:30', 3),
-	(36, 4, '2020-05-09 23:26:43', '2020-05-09 23:27:19', 1),
-	(37, 4, '2020-05-09 23:28:37', '2020-05-09 23:29:00', 1),
-	(38, 4, '2020-05-09 23:29:05', '2020-05-09 23:29:44', 1),
-	(39, 5, '2020-05-09 23:31:27', '2020-05-09 23:32:24', 1),
-	(40, 5, '2020-05-09 23:32:32', '2020-05-09 23:34:50', 1),
-	(41, 5, '2020-05-09 23:37:17', '2020-05-09 23:41:03', 1),
-	(42, 4, '2020-05-09 23:58:28', NULL, 1);
+	(27, 1, '2020-05-08 09:01:36', '2020-05-08 15:59:21', 3),
+	(28, 1, '2020-05-14 08:47:40', '2020-05-14 20:00:28', 3),
+	(29, 1, '2020-05-18 10:00:27', '2020-05-18 19:00:00', 3),
+	(30, 1, '2020-05-22 08:48:32', '2020-05-22 20:00:34', 3),
+	(31, 1, '2020-05-26 10:00:42', '2020-05-26 18:00:00', 3);
 /*!40000 ALTER TABLE `shift` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.taddworkbranch
@@ -1685,7 +1692,7 @@ CREATE TABLE IF NOT EXISTS `tuserbranch` (
 INSERT INTO `tuserbranch` (`id_user`, `id_branch`, `ip`, `check_ip`, `id_position`, `price`, `flagdelete`) VALUES
 	(1, 1, '', b'0', 0, NULL, b'0'),
 	(2, 1, '', b'1', 1, NULL, b'0'),
-	(1, 3, '', b'0', 5, NULL, b'0'),
+	(1, 3, '', b'0', 2, NULL, b'0'),
 	(4, 1, '', b'0', 1, NULL, b'0'),
 	(5, 1, '', b'0', 3, NULL, b'0'),
 	(6, 3, '', b'0', 1, NULL, b'0'),
