@@ -75,10 +75,12 @@ async function asyncDetailWashing(id_washing) {
 async function asyncDetailAddWork(id_addwork) {
 
     const sSQL =
-            " select ald.id, ald.quant, lb.work_name "+
-            " from addwork_laundry_detail ald, laundry_add_work lb "+
-            " WHERE lb.id = ald.id_nom and ald.id_addwork = ? "+
-            " order by ald.quant desc ";
+       " select ald.id, ald.quant, lb.name as work_name " +
+       " from addwork_laundry_detail ald, laundry_add_work lb " +
+       " WHERE lb.id = ald.id_addwork and ald.id_addwork_laundry = ? " +
+       " order by ald.quant desc ";
+
+
 
     let conn;
     try {
@@ -201,7 +203,7 @@ async function asyncLastAddWork(id_user, id_branch) {
         "    al.id " +
         " FROM addwork_laundry al, shift sh, tuser u, tbranch b "+
         " WHERE al.date_oper = (SELECT MAX(date_oper) from addwork_laundry where id in "+
-        " (SELECT id_addwork FROM addwork_laundry_detail)) "+
+        " (SELECT id_addwork_laundry FROM addwork_laundry_detail)) "+
         " AND sh.id=al.id_shift "+
         " AND "+
         " u.id = sh.id_user "+
