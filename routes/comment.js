@@ -54,7 +54,7 @@ async function asyncMessageImageList(id_message) {
 
 async function asyncMessage(id_message) {
     const sSQL =
-        " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation, m.summa, "+
+        " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation,  m.data_solution, m.summa, "+
         " b.name as branch_name, p.name as position_name, ifnull(m.result_response, 0) as result_response, m.comment_response "+
         " from message m "+
         " left join tposition p on p.id=m.id_position_to "+
@@ -90,7 +90,7 @@ async function asyncPositionUser(id_user, id_branch) {
 
 async function asyncLastMessage(id_user, id_branch) {
     const sSQL =
-    " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation, m.summa, "+
+    " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation, m.data_solution, m.summa, "+
     " b.name as branch_name, p.name as position_name "+
     " from message m "+
     " left join tposition p on p.id=m.id_position_to "+
@@ -257,9 +257,11 @@ async function asyncUpdateMessage(id_message, id_user, summa, comment_response, 
 }
 
 
-async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_instruction) {
-    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, result_response, date_from) " +
-                 " values (?,?,?,?,?,?,?,?, now())";
+async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_instruction) {
+    const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, " +
+                                 " data_situation, data_solution, summa, " +
+                                  " result_response, date_from) " +
+                 " values (?,?,?,?,?,?,?,?,?, now())";
 
     let int_response = 0;
     if (int_instruction === 1) {
@@ -273,7 +275,7 @@ async function asyncNewMessage(id_user_from, id_position_from, id_position_to, i
         data_situation = data_situation.replace(/[']/g, "\'");
 
         conn = await pool.getConnection();
-        const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, summa, int_response]);
+        const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_response]);
 
                        // вставляем отправителя в прочитавшие письмо
                        if (rows.insertId) {
@@ -298,6 +300,7 @@ router.post('/', async function(req, res) {
                                              req.body.id_branch,
                                              req.body.situation,
                                              req.body.data_situation,
+                                             req.body.data_solution,
                                              req.body.summa,
                                              req.body.int_instruction);
 
