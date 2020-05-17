@@ -30,8 +30,6 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry` (
 
 -- Дамп данных таблицы victoria.acceptance_laundry: ~1 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry` DISABLE KEYS */;
-INSERT INTO `acceptance_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
-	(1, 34, 33, '2020-05-15 17:51:09', 1);
 /*!40000 ALTER TABLE `acceptance_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.acceptance_laundry_detail
@@ -47,9 +45,6 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry_detail` (
 
 -- Дамп данных таблицы victoria.acceptance_laundry_detail: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry_detail` DISABLE KEYS */;
-INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `bitspoiled`) VALUES
-	(3, 1, 1, 4, b'1'),
-	(4, 1, 2, 4, b'1');
 /*!40000 ALTER TABLE `acceptance_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.addwork_laundry
@@ -805,9 +800,7 @@ CREATE TABLE IF NOT EXISTS `message` (
 INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `id_position_to`, `id_branch`, `situation`, `data_situation`, `data_solution`, `summa`, `result_response`, `bit_response`, `date_response`, `id_user_response`, `comment_response`, `flagdelete`) VALUES
 	(157, 6, 1, '2020-05-11 00:13:36', 2, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', NULL, 2950, 2, b'1', '2020-05-15 13:31:50', 1, 'тут отказ', b'0'),
 	(158, 6, 1, '2020-05-11 00:20:24', 2, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', NULL, 1000, 1, b'1', '2020-05-15 13:31:33', 1, '', b'0'),
-	(159, 1, 2, '2020-05-11 00:25:15', 1, 3, 'Инструкция о включении стиральной машины.', 'Подробности на фото.', NULL, 0, 3, NULL, NULL, NULL, NULL, b'0'),
-	(160, 1, 2, '2020-05-15 14:36:23', 1, 3, 'ситуация data_solution', 'данные data_solution', 'решение data_solution', 1000, 0, NULL, NULL, NULL, NULL, b'0'),
-	(161, 1, 2, '2020-05-15 14:42:33', 1, 3, 'тут описание ситуации', 'тут описание данных', 'тут предложенное решение', 1000, 0, NULL, NULL, NULL, NULL, b'0');
+	(159, 1, 2, '2020-05-11 00:25:15', 1, 3, 'Инструкция о включении стиральной машины.', 'Подробности на фото.', NULL, 0, 3, NULL, NULL, NULL, NULL, b'0');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_image
@@ -844,8 +837,6 @@ CREATE TABLE IF NOT EXISTS `message_read` (
 
 -- Дамп данных таблицы victoria.message_read: ~1 rows (приблизительно)
 /*!40000 ALTER TABLE `message_read` DISABLE KEYS */;
-INSERT INTO `message_read` (`id`, `id_message`, `id_user`) VALUES
-	(47, 161, 1);
 /*!40000 ALTER TABLE `message_read` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.payment_laundry
@@ -1485,8 +1476,7 @@ INSERT INTO `shift` (`id`, `id_user`, `date_begin`, `date_end`, `id_branch`) VAL
 	(30, 1, '2020-05-22 08:48:32', '2020-05-22 20:00:34', 3),
 	(31, 1, '2020-05-26 10:00:42', '2020-05-26 18:00:00', 3),
 	(32, 1, '2020-05-13 15:23:38', '2020-05-15 15:45:37', 3),
-	(33, 1, '2020-05-15 15:45:49', '2020-05-15 15:47:25', 3),
-	(34, 1, '2020-05-15 15:47:27', NULL, 3);
+	(33, 1, '2020-05-15 15:45:49', '2020-05-15 15:47:25', 3);
 /*!40000 ALTER TABLE `shift` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.taddworkbranch
@@ -1900,4 +1890,5 @@ DROP VIEW IF EXISTS `v_laundry_nomenclature`;
 -- Удаление временной таблицы и создание окончательной структуры представления
 DROP TABLE IF EXISTS `v_laundry_nomenclature`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_laundry_nomenclature` AS select `ln`.`id_nom` AS `id_nom`,`lb`.`name` AS `name`,`lt`.`type` AS `type`,`lb`.`id_lbn` AS `id_lbn`,`lt`.`id_ltp` AS `id_ltp` from ((`laundry_nomenclature` `ln` left join `laundry_basenom` `lb` on(`lb`.`id_lbn` = `ln`.`id_lbn`)) left join `laundry_typenl` `lt` on(`lt`.`id_ltp` = `ln`.`id_ltp`)) ;
+
 
