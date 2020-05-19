@@ -164,8 +164,12 @@ async function asyncMessageList(id_user, id_branch, id_position, date_begin, dat
 
 router.get('/', async function(req, res, next) {
 
+        if (req.query.last_unread_message) {
+            const result = await asyncLastUnreadMessage(req.query.id_user, req.query.id_branch);
+            res.send(result);
+        }
 
-    // select_unread_count
+
     if (req.query.get_unread_count) {
         const result = await asyncSelectUnreadCount(req.query.id_user, req.query.id_branch, req.query.date_begin, req.query.date_end);
         res.send(result);
@@ -214,6 +218,21 @@ router.get('/', async function(req, res, next) {
 
 
 });
+
+
+async function asyncLastUnreadMessage(id_user, id_branch) {
+    const sSQL = " call last_unread_message (?, ?) ";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_user, id_branch]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
 
 async function asyncReadMessage(id_message, id_user) {
     const sSQL = " insert message_read (id_message, id_user) values (?, ?) ";
