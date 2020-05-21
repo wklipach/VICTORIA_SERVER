@@ -16,6 +16,22 @@ async function asyncAddress(id_address) {
     }
 }
 
+async function asyncSelectPie(id_branch, var_date1, var_date2, inttype) {
+    const sSQL = "call select_pie (?, ?, ?, ?)";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_branch, var_date1, var_date2, inttype]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
+
+
 async function asyncAcceptance(id_address, id_branch) {
     const sSQL = "call bottom_acceptance (?, ?)";
     let conn;
@@ -136,11 +152,21 @@ router.post('/', async function(req, res) {
 router.get('/', async function(req, res, next) {
 
     if (req.query.select_report_graph) {
-        const result = await asyncSelectReportGraph(req.query.id_user, req.query.id_branch,
-                                                    req.query.date_begin, req.query.date_end, req.query.type);
+        const result = await asyncSelectReportGraph(req.query.id_user,
+                                                    req.query.id_branch,
+                                                    req.query.date_begin,
+                                                    req.query.date_end,
+                                                    req.query.type);
         res.send(result);
     }
 
+    if (req.query.select_pie) {
+          const result = await asyncSelectPie(req.query.id_branch,
+                                                      req.query.date_begin,
+                                                      req.query.date_end,
+                                                      req.query.type);
+          res.send(result);
+        }
 
     if (req.query.select_report_face) {
         const result = await asyncSelectReportFace(req.query.id_user, req.query.id_branch);
