@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.acceptance_laundry: ~10 rows (приблизительно)
+-- Дамп данных таблицы victoria.acceptance_laundry: ~12 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry` DISABLE KEYS */;
 INSERT INTO `acceptance_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 6, '2020-05-21 13:55:58', 1),
@@ -41,7 +41,8 @@ INSERT INTO `acceptance_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_ad
 	(8, 37, 10, '2020-05-21 14:04:47', 3),
 	(9, 37, 5, '2020-05-21 14:05:03', 4),
 	(10, 37, 5, '2020-05-21 14:06:01', 4),
-	(11, 37, 6, '2020-05-21 16:08:44', 6);
+	(11, 37, 6, '2020-05-21 16:08:44', 6),
+	(12, 38, 0, '2020-05-27 23:31:34', 6);
 /*!40000 ALTER TABLE `acceptance_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.acceptance_laundry_detail
@@ -53,9 +54,9 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry_detail` (
   `quant` int(11) NOT NULL,
   `bitspoiled` bit(1) NOT NULL DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.acceptance_laundry_detail: ~20 rows (приблизительно)
+-- Дамп данных таблицы victoria.acceptance_laundry_detail: ~24 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry_detail` DISABLE KEYS */;
 INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `bitspoiled`) VALUES
 	(11, 1, 1, 1, b'0'),
@@ -79,7 +80,9 @@ INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `
 	(35, 9, 11, 5, b'0'),
 	(36, 10, 11, 5, b'1'),
 	(37, 11, 1, 2, b'0'),
-	(38, 11, 2, 1, b'0');
+	(38, 11, 2, 1, b'0'),
+	(40, 12, 1, 7, b'0'),
+	(41, 12, 2, 7, b'0');
 /*!40000 ALTER TABLE `acceptance_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.addwork_laundry
@@ -91,8 +94,11 @@ CREATE TABLE IF NOT EXISTS `addwork_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.addwork_laundry: ~0 rows (приблизительно)
+-- Дамп данных таблицы victoria.addwork_laundry: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `addwork_laundry` DISABLE KEYS */;
+INSERT INTO `addwork_laundry` (`id`, `id_shift`, `date_oper`) VALUES
+	(1, 38, '2020-05-27 21:18:29'),
+	(2, 38, '2020-05-27 21:39:04');
 /*!40000 ALTER TABLE `addwork_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.addwork_laundry_detail
@@ -103,11 +109,31 @@ CREATE TABLE IF NOT EXISTS `addwork_laundry_detail` (
   `id_addwork` int(11) NOT NULL,
   `quant` int(11) NOT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.addwork_laundry_detail: ~0 rows (приблизительно)
+-- Дамп данных таблицы victoria.addwork_laundry_detail: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `addwork_laundry_detail` DISABLE KEYS */;
+INSERT INTO `addwork_laundry_detail` (`id`, `id_addwork_laundry`, `id_addwork`, `quant`) VALUES
+	(55, 1, 5, 1),
+	(56, 2, 2, 1);
 /*!40000 ALTER TABLE `addwork_laundry_detail` ENABLE KEYS */;
+
+-- Дамп структуры для таблица victoria.addwork_spend_detail
+DROP TABLE IF EXISTS `addwork_spend_detail`;
+CREATE TABLE IF NOT EXISTS `addwork_spend_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_addwork_laundry` int(11) DEFAULT NULL,
+  `id_addwork` int(11) DEFAULT NULL,
+  `quant` int(11) DEFAULT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Дамп данных таблицы victoria.addwork_spend_detail: ~2 rows (приблизительно)
+/*!40000 ALTER TABLE `addwork_spend_detail` DISABLE KEYS */;
+INSERT INTO `addwork_spend_detail` (`id`, `id_addwork_laundry`, `id_addwork`, `quant`) VALUES
+	(1, 2, 6, 10),
+	(2, 2, 7, 15);
+/*!40000 ALTER TABLE `addwork_spend_detail` ENABLE KEYS */;
 
 -- Дамп структуры для процедура victoria.bottom_acceptance
 DROP PROCEDURE IF EXISTS `bottom_acceptance`;
@@ -354,6 +380,8 @@ DROP PROCEDURE IF EXISTS `insert_addwork`;
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_addwork`(
 	IN `var_name` TINYTEXT
+,
+	IN `var_flagspend` BIT
 )
 BEGIN
 
@@ -362,7 +390,7 @@ DECLARE id_record INT DEFAULT 0;
 SELECT ifnull(MAX(id),0)+1 INTO id_record FROM laundry_add_work;
 
  
-insert laundry_add_work (id, name) values(id_record, var_name);
+insert laundry_add_work (id, name, flagspend) values(id_record, var_name, var_flagspend);
  
 SELECT * from laundry_add_work where id=id_record;
 END//
@@ -726,7 +754,7 @@ INSERT INTO `laundry_address_shipment` (`id_address`, `address`, `id_branch`, `f
 	(4, 'Мира 5', 1, NULL),
 	(5, 'Апартаменты', 1, NULL),
 	(6, 'Тестовый 1', 3, NULL),
-	(7, 'Тестовый 2', 3, NULL);
+	(7, 'Тестовый 2', 3, b'1');
 /*!40000 ALTER TABLE `laundry_address_shipment` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.laundry_add_work
@@ -735,17 +763,24 @@ CREATE TABLE IF NOT EXISTS `laundry_add_work` (
   `id` int(11) NOT NULL,
   `name` text COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `flagdelete` bit(1) NOT NULL DEFAULT b'0',
+  `flagspend` bit(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.laundry_add_work: ~5 rows (приблизительно)
+-- Дамп данных таблицы victoria.laundry_add_work: ~11 rows (приблизительно)
 /*!40000 ALTER TABLE `laundry_add_work` DISABLE KEYS */;
-INSERT INTO `laundry_add_work` (`id`, `name`, `flagdelete`) VALUES
-	(1, 'помывка полов', b'0'),
-	(2, 'помывка окон', b'0'),
-	(3, 'вынос мусора', b'0'),
-	(4, 'Заправка постелей', b'0'),
-	(5, 'Протирка зеркал', b'0');
+INSERT INTO `laundry_add_work` (`id`, `name`, `flagdelete`, `flagspend`) VALUES
+	(1, 'помывка полов', b'0', b'0'),
+	(2, 'помывка окон', b'0', b'0'),
+	(3, 'вынос мусора', b'0', NULL),
+	(4, 'Заправка постелей', b'0', b'0'),
+	(5, 'Протирка зеркал', b'0', NULL),
+	(6, 'расход порошка', b'0', b'1'),
+	(7, 'расход воды', b'0', b'1'),
+	(8, '123456', b'1', b'1'),
+	(9, '99999', b'0', b'0'),
+	(10, 'новые расходы', b'0', b'1'),
+	(11, 'новая работа', b'0', b'0');
 /*!40000 ALTER TABLE `laundry_add_work` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.laundry_basenom
@@ -935,7 +970,8 @@ CREATE TABLE IF NOT EXISTS `repair_laundry` (
 /*!40000 ALTER TABLE `repair_laundry` DISABLE KEYS */;
 INSERT INTO `repair_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 5, '2020-05-21 14:06:17', 4),
-	(2, 37, 2, '2020-05-21 14:09:21', 2);
+	(2, 37, 2, '2020-05-21 14:09:21', 2),
+	(3, 38, 0, '2020-05-27 23:37:48', 1);
 /*!40000 ALTER TABLE `repair_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.repair_laundry_detail
@@ -946,13 +982,14 @@ CREATE TABLE IF NOT EXISTS `repair_laundry_detail` (
   `id_nom` int(11) NOT NULL,
   `quant` int(11) NOT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Дамп данных таблицы victoria.repair_laundry_detail: ~2 rows (приблизительно)
 /*!40000 ALTER TABLE `repair_laundry_detail` DISABLE KEYS */;
 INSERT INTO `repair_laundry_detail` (`id`, `id_repair`, `id_nom`, `quant`) VALUES
 	(2, 1, 11, 4),
-	(3, 2, 2, 1);
+	(3, 2, 2, 1),
+	(4, 3, 1, 1);
 /*!40000 ALTER TABLE `repair_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для процедура victoria.SELECT_ALL
@@ -1276,6 +1313,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `select_pie`(
 
 
 
+
+
 )
 BEGIN
 
@@ -1295,47 +1334,66 @@ end if;
 
 /* ремонт */
 if var_type = 2 then
-SELECT sum(r.massa) as massa, addr.address, addr.id_address
-FROM repair_laundry r, laundry_address_shipment addr, shift s
-WHERE s.id=r.id_shift and addr.id_address=r.id_address and DATE(r.date_oper)>=DATE(var_db1) and DATE(r.date_oper)<=DATE(var_db2)
+SELECT sum(det.quant) as massa, addr.address, addr.id_address
+FROM repair_laundry r, laundry_address_shipment addr, shift s, repair_laundry_detail det
+WHERE det.id_repair=r.id and s.id=r.id_shift and addr.id_address=r.id_address and DATE(r.date_oper)>=DATE(var_db1) and DATE(r.date_oper)<=DATE(var_db2)
 and s.id_branch=var_id_branch
 group by addr.address;
 end if;
 
 /* --стирка */
 if var_type = 3 then
-SELECT SUM(w.massa) AS massa, addr.address, addr.id_address
-FROM washing_laundry w, laundry_address_shipment addr, shift s
-WHERE s.id=w.id_shift and addr.id_address=w.id_address and DATE(w.date_oper)>=DATE(var_db1) and DATE(w.date_oper)<=DATE(var_db2)
+SELECT SUM(det.quant) AS massa, addr.address, addr.id_address
+FROM washing_laundry w, laundry_address_shipment addr, shift s, washing_laundry_detail det 
+WHERE det.id_washing = w.id and  s.id=w.id_shift and addr.id_address=w.id_address and DATE(w.date_oper)>=DATE(var_db1) and DATE(w.date_oper)<=DATE(var_db2)
     and s.id_branch=var_id_branch
 group by addr.address;
 end if;
 
 /* --принято на склад */
 if var_type = 4 then
-select SUM(war.massa) AS massa, addr.address, addr.id_address 
-   from warehouse_laundry war, laundry_address_shipment addr, shift s
-     where war.id in (select id_warehouse from warehouse_laundry_detail where ifnull(bitadd,0) = 1) 
-         and s.id=war.id_shift 
-	      and addr.id_address=war.id_address 
-			and DATE(war.date_oper)>=DATE(var_db1) and DATE(war.date_oper)<=DATE(var_db2) 
-			and s.id_branch=var_id_branch         
+select SUM(det.quant) AS massa, addr.address, addr.id_address 
+    from warehouse_laundry war, laundry_address_shipment addr, shift s, warehouse_laundry_detail det
+       where war.id=det.id_warehouse and
+             ifnull(det.bitadd,0) = 1 
+          and s.id=war.id_shift 
+	       and addr.id_address=war.id_address 
+          and DATE(war.date_oper) >= DATE(var_db1) 
+			 and DATE(war.date_oper) <= DATE(var_db2)
+          and s.id_branch=var_id_branch         
 group by addr.address;
 end if;
 
 
 /*  --отправлено клиенту */
 if var_type = 5 then
-select SUM(war.massa) AS massa, addr.address, addr.id_address 
-    from warehouse_laundry war, laundry_address_shipment addr, shift s
-       where war.id in (select id_warehouse from warehouse_laundry_detail where ifnull(bitadd,0) = 0) 
+select SUM(det.quant) AS massa, addr.address, addr.id_address 
+    from warehouse_laundry war, laundry_address_shipment addr, shift s, warehouse_laundry_detail det
+       where war.id=det.id_warehouse and
+             ifnull(det.bitadd,0) = 0 
           and s.id=war.id_shift 
 	       and addr.id_address=war.id_address 
-			 and DATE(war.date_oper) >= DATE(var_db1) 
+          and DATE(war.date_oper) >= DATE(var_db1) 
 			 and DATE(war.date_oper) <= DATE(var_db2)
           and s.id_branch=var_id_branch         
 group by addr.address;
 end if;
+
+/*  --расходы */
+if var_type = 6 then
+SELECT sum(det.quant) as massa, lad.name as address, lad.id as id_address
+FROM addwork_laundry d, 
+	  shift s, 
+	  addwork_spend_detail det,
+	  laundry_add_work lad 
+WHERE det.id_addwork_laundry = d.id 
+      and  s.id=d.id_shift 
+      and lad.id = det.id_addwork
+      and DATE(d.date_oper)>=DATE(var_db1) and DATE(d.date_oper)<=DATE(var_db2)
+      and s.id_branch= var_id_branch
+group by det.id_addwork;
+end if;
+
 
 
 END//
@@ -1598,7 +1656,7 @@ CREATE TABLE IF NOT EXISTS `shift` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.shift: ~34 rows (приблизительно)
+-- Дамп данных таблицы victoria.shift: ~35 rows (приблизительно)
 /*!40000 ALTER TABLE `shift` DISABLE KEYS */;
 INSERT INTO `shift` (`id`, `id_user`, `date_begin`, `date_end`, `id_branch`) VALUES
 	(1, 1, '2020-01-15 09:09:00', '2020-01-15 19:02:00', 3),
@@ -1636,7 +1694,8 @@ INSERT INTO `shift` (`id`, `id_user`, `date_begin`, `date_end`, `id_branch`) VAL
 	(34, 1, '2020-05-18 00:51:05', '2020-05-18 17:56:19', 3),
 	(35, 1, '2020-05-18 17:57:03', '2020-05-18 17:57:06', 3),
 	(36, 1, '2020-05-18 17:59:39', '2020-05-18 17:59:41', 3),
-	(37, 1, '2020-05-18 18:39:09', NULL, 3);
+	(37, 1, '2020-05-18 18:39:09', '2020-05-22 21:20:00', 3),
+	(38, 1, '2020-05-22 21:22:59', NULL, 3);
 /*!40000 ALTER TABLE `shift` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.taddworkbranch
@@ -1648,18 +1707,17 @@ CREATE TABLE IF NOT EXISTS `taddworkbranch` (
   `price` int(11) NOT NULL DEFAULT 0,
   `flagdelete` bit(1) DEFAULT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.taddworkbranch: ~7 rows (приблизительно)
+-- Дамп данных таблицы victoria.taddworkbranch: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `taddworkbranch` DISABLE KEYS */;
 INSERT INTO `taddworkbranch` (`id`, `id_branch`, `id_addwork`, `price`, `flagdelete`) VALUES
-	(1, 3, 6, 13, b'0'),
 	(2, 3, 1, 15, b'0'),
 	(3, 3, 2, 20, b'0'),
 	(4, 1, 1, 15, b'0'),
 	(5, 1, 2, 20, b'0'),
-	(6, 1, 6, 10, b'0'),
-	(7, 1, 7, 15, b'0');
+	(8, 3, 5, 4, b'0'),
+	(9, 3, 8, 0, b'0');
 /*!40000 ALTER TABLE `taddworkbranch` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.tbranch
@@ -1895,7 +1953,9 @@ INSERT INTO `warehouse_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_add
 	(5, 37, 4, '2020-05-21 14:15:00', 2),
 	(6, 37, 4, '2020-05-21 14:15:15', 1),
 	(7, 37, 4, '2020-05-21 14:16:05', 1),
-	(8, 37, 2, '2020-05-21 14:17:22', 2);
+	(8, 37, 2, '2020-05-21 14:17:22', 2),
+	(9, 38, 0, '2020-05-27 23:45:28', 4),
+	(10, 38, 0, '2020-05-27 23:49:01', 4);
 /*!40000 ALTER TABLE `warehouse_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.warehouse_laundry_detail
@@ -1907,7 +1967,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_laundry_detail` (
   `quant` int(11) NOT NULL,
   `bitadd` bit(1) NOT NULL DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Дамп данных таблицы victoria.warehouse_laundry_detail: ~17 rows (приблизительно)
 /*!40000 ALTER TABLE `warehouse_laundry_detail` DISABLE KEYS */;
@@ -1928,7 +1988,10 @@ INSERT INTO `warehouse_laundry_detail` (`id`, `id_warehouse`, `id_nom`, `quant`,
 	(290, 7, 2, 1, b'0'),
 	(291, 7, 11, 1, b'0'),
 	(292, 7, 12, 1, b'0'),
-	(296, 8, 2, 2, b'0');
+	(296, 8, 2, 2, b'0'),
+	(297, 9, 13, 1, b'1'),
+	(298, 10, 11, 1, b'0'),
+	(299, 10, 13, 1, b'0');
 /*!40000 ALTER TABLE `warehouse_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.washing_laundry
@@ -1949,7 +2012,8 @@ INSERT INTO `washing_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_addre
 	(2, 37, 9, '2020-05-21 14:10:29', 2),
 	(3, 37, 5, '2020-05-21 14:10:46', 3),
 	(4, 37, 9, '2020-05-21 14:11:05', 4),
-	(5, 37, 2, '2020-05-21 14:11:18', 5);
+	(5, 37, 2, '2020-05-21 14:11:18', 5),
+	(6, 38, 0, '2020-05-27 23:41:14', 4);
 /*!40000 ALTER TABLE `washing_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.washing_laundry_detail
@@ -1960,7 +2024,7 @@ CREATE TABLE IF NOT EXISTS `washing_laundry_detail` (
   `id_nom` int(11) NOT NULL DEFAULT 0,
   `quant` int(11) NOT NULL DEFAULT 0,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=285 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Дамп данных таблицы victoria.washing_laundry_detail: ~12 rows (приблизительно)
 /*!40000 ALTER TABLE `washing_laundry_detail` DISABLE KEYS */;
@@ -1976,7 +2040,8 @@ INSERT INTO `washing_laundry_detail` (`id`, `id_washing`, `id_nom`, `quant`) VAL
 	(280, 3, 3, 5),
 	(281, 4, 11, 4),
 	(282, 4, 13, 5),
-	(284, 5, 3, 2);
+	(284, 5, 3, 2),
+	(285, 6, 11, 1);
 /*!40000 ALTER TABLE `washing_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для процедура victoria.week_face

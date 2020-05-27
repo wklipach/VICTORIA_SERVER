@@ -72,6 +72,37 @@ async function asyncDetailWashing(id_washing) {
     }
 }
 
+
+async function asyncDetailAddWorkAndSpend(id_addwork) {
+
+  const sSQL =
+    " select * from ( "+
+    "    select ald.id as id, ald.quant as quant, lb.name as work_name "+
+    " from addwork_laundry_detail ald, laundry_add_work lb "+
+    " WHERE lb.id = ald.id_addwork and ald.id_addwork_laundry = ? "+
+    " order by ald.quant desc) as A "+
+    " union all "+
+    " select * from ( "+
+    "    select asd.id as id, asd.quant as quant, lb.name as work_name "+
+    " from addwork_spend_detail asd, laundry_add_work lb "+
+    " WHERE lb.id = asd.id_addwork and asd.id_addwork_laundry = ? "+
+    " order by asd.quant desc) as B ";
+
+
+
+
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_addwork, id_addwork]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
 async function asyncDetailAddWork(id_addwork) {
 
     const sSQL =
@@ -118,7 +149,16 @@ async function asyncDetailAcceptance(id_accept) {
 
 
 async function asyncAddWork() {
-    const sSQL = "select * from laundry_add_work where ifnull(flagdelete,0)=0 order by id";
+
+
+    const sSQL =
+    "select id, " +
+    "       name, " +
+    "       cast(ifnull(flagdelete,0)  as int) as flagdelete, " +
+    "       cast(ifnull(flagspend,0)  as int) as flagspend " +
+    " from laundry_add_work where ifnull(flagdelete,0)=0 order by id ";
+
+
     let conn;
     try {
         conn = await pool.getConnection();
@@ -428,9 +468,13 @@ async function asyncNewWashing(value, id_shift, id_address) {
         let sVal = '';
 
         // заносим складскую проводку с переданным бельем
+        let sMas = 0;
+        if (value['massa'] && Number(value['massa'])) {
+                sMas = value['massa'];
+        };
 
         let sSQL = 'CALL insert_washing_laundry(?, ?, ?, ?)';
-        const rows = await conn.query(sSQL, [id_shift, id_address, value['massa'], (new Date()).getTime()]);
+        const rows = await conn.query(sSQL, [id_shift, id_address, sMas, (new Date()).getTime()]);
 
         if (rows[0]) {
             value['massa'] = undefined;
@@ -473,9 +517,14 @@ async function asyncNewRepair(value, id_shift, id_address) {
         let sVal = '';
 
         // заносим складскую проводку с переданным бельем
+        let sMas = 0;
+        if (value['massa'] && Number(value['massa'])) {
+            sMas = value['massa'];
+        };
+
 
         let sSQL = 'CALL insert_repair_laundry(?, ?, ?, ?)';
-        const rows = await conn.query(sSQL, [id_shift, id_address, value['massa'], (new Date()).getTime()]);
+        const rows = await conn.query(sSQL, [id_shift, id_address, sMas, (new Date()).getTime()]);
 
         if (rows[0]) {
             value['massa'] = undefined;
@@ -504,7 +553,7 @@ async function asyncNewRepair(value, id_shift, id_address) {
 }
 
 // const result = await asyncNewAddWork(req.body.addwork_insert, req.body.id_shift);
-async function asyncNewAddWork(value, id_shift) {
+async function asyncNewAddWork(value, spendvalue, id_shift) {
 
     let conn;
     try {
@@ -520,6 +569,12 @@ async function asyncNewAddWork(value, id_shift) {
 
                 const res_rows = await conn.query(aSQL,[rows[0][0].id, key.id, 1]);
             };
+
+            const bSQL ="insert addwork_spend_detail(id_addwork_laundry, id_addwork, quant) values(?,?,?)";
+            for (spendkey of spendvalue) {
+                const res_spendrows = await conn.query(bSQL,[rows[0][0].id, spendkey.id, spendkey.quant]);
+            };
+
         }
 
         return JSON.stringify(true);
@@ -542,10 +597,15 @@ async function asyncNewWarehouse(value, id_shift, bitadd, id_address) {
         conn = await pool.getConnection();
 
         let sVal = '';
+        let sMas = 0;
+        if (value['massa'] && Number(value['massa'])) {
+            sMas = value['massa'];
+        };
+
 
         // заносим складскую проводку с переданным бельем
         let sSQL = 'CALL insert_warehouse_laundry(?, ?, ?, ?)';
-        const rows = await conn.query(sSQL, [id_shift, id_address, value['massa'], (new Date()).getTime()]);
+        const rows = await conn.query(sSQL, [id_shift, id_address, sMas, (new Date()).getTime()]);
 
         if (rows[0]) {
             value['massa'] = undefined;
@@ -588,9 +648,15 @@ async function asyncNewAcceptance(value, id_shift, id_address) {
                 conn = await pool.getConnection();
                 let sVal = '';
 
-                // заносим проводку с переданным бельем
+            let sMas = 0;
+            if (value['massa'] && Number(value['massa'])) {
+                sMas = value['massa'];
+            };
+
+
+            // заносим проводку с переданным бельем
                 let sSQL = 'CALL insert_acceptance_laundry(?, ?, ?, ?)';
-                const rows = await conn.query(sSQL, [id_shift, id_address, value['massa'], (new Date()).getTime()]);
+                const rows = await conn.query(sSQL, [id_shift, id_address, sMas, (new Date()).getTime()]);
 
                 if (rows[0]) {
                         value['massa'] = undefined;
@@ -663,6 +729,12 @@ router.get('/', async function(req, res, next) {
             res.send(result);
         }
 
+        if (req.query.detail_addwork_and_spend) {
+           const result = await asyncDetailAddWorkAndSpend(req.query.id_addwork);
+           res.send(result);
+        }
+
+
         if (req.query.detail_warehouse) {
             const result = await asyncDetailWarehouse(req.query.id_warehouse);
             res.send(result);
@@ -720,10 +792,9 @@ router.post('/', async function(req, res) {
     }
 
     if (req.body.addwork_insert) {
-        const result = await asyncNewAddWork(req.body.addwork_insert, req.body.id_shift);
+        const result = await asyncNewAddWork(req.body.addwork_insert, req.body.addspend_insert, req.body.id_shift);
         res.send(result);
     }
-
 
 });
 

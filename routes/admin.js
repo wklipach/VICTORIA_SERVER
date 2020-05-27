@@ -45,7 +45,7 @@ async function asyncSelectAddworkBranch(id_branch) {
     try {
         conn = await pool.getConnection();
         let sql =
-        "select w.id, w.name, ifnull(tab.price,0) as price, w.flagdelete, (not not ifnull(tab.id,0)) as check_price "+
+        "select w.id, w.name, ifnull(tab.price,0) as price, w.flagdelete, cast(ifnull(w.flagspend,0) as int) as flagspend, (not not ifnull(tab.id,0)) as check_price "+
         "from laundry_add_work w "+
         "left join taddworkbranch tab on tab.id_addwork = w.id "+
         "and ifnull(tab.flagdelete,0)=0 and tab.id_branch = ? "+
@@ -235,12 +235,12 @@ async function asyncNewAddress(name, id_branch) {
     }
 }
 
-async function asyncNewAddWork(name) {
+async function asyncNewAddWork(name, flagspend) {
     let conn;
     try {
         conn = await pool.getConnection();
-        let sql = "CALL insert_addwork ( ? )";
-        const rows = await conn.query(sql, [name]);
+        let sql = "CALL insert_addwork ( ?, ? )";
+        const rows = await conn.query(sql, [name, flagspend]);
         return JSON.stringify(rows);
     } catch (err) {
         throw err;
@@ -291,12 +291,12 @@ async function asyncUpdateAddress(id_address, address, id_branch) {
     }
 }
 
-async function asyncUpdateAddWork(id, work_name) {
+async function asyncUpdateAddWork(id, work_name, flagspend) {
     let conn;
     try {
         conn = await pool.getConnection();
-        let sql = "update laundry_add_work set name=? where id=?";
-        const rows = await conn.query(sql, [work_name, id]);
+        let sql = "update laundry_add_work set name=?, flagspend= ? where id=?";
+        const rows = await conn.query(sql, [work_name, flagspend, id]);
         return JSON.stringify(rows);
     } catch (err) {
         throw err;
@@ -541,7 +541,7 @@ router.post('/', async function(req, res) {
 
 
     if (req.body.update_addwork) {
-        const result = await  asyncUpdateAddWork(req.body.id, req.body.work_name);
+        const result = await  asyncUpdateAddWork(req.body.id, req.body.work_name, req.body.flagspend);
         res.send(result);
     }
 
@@ -566,7 +566,7 @@ router.post('/', async function(req, res) {
     }
 
     if (req.body.insert_addwork) {
-        const result = await  asyncNewAddWork(req.body.name);
+        const result = await  asyncNewAddWork(req.body.name, req.body.flagspend);
         res.send(result);
     }
 
