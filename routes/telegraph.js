@@ -1,25 +1,59 @@
 var express = require('express');
 var router = express.Router();
-const { Telegraf } = require('telegraf')
+const TelegramBot = require('node-telegram-bot-api');
+const Agent = require('socks5-https-client/lib/Agent');
+const token =  "1175492418:AAHGyI3UO-DhxY0HUncwmyLxn3tUewxzY7s";
+const bot = new TelegramBot( token, {
+    polling: true,
+    request: {
+        agentClass: Agent,
+        agentOptions: {
+            socksHost: '45.84.226.127',
+            socksPort: '9100'
+        }
+    }
+});
 
 router.get('/', async function(req, res, next) {
-        sendToTelegramm();
-        res.send('test talegraph');
+
+    if (req.query.send_text) {
+        sendToTelegramm(req.query.nick, req.query.message);
+        res.send('true');
+    }
+
 });
 
 
-function sendToTelegramm() {
-    process.env.bot_token = "1006099878:AAHGXxkIAYIqgYjSENZF4pgZHYM0BF9TX90";
-    const bot = new Telegraf(process.env.bot_token);
+function sendToTelegramm(nick, victoria_text) {
 
-    console.log('bot', bot);
+    process.env.NTBA_FIX_319 = 1;
+    console.log('bot', '123456.....');
+    bot.sendMessage('@victoria_sbor', nick + ' ' + victoria_text + ' ' + 'http://45.84.226.127/comment-laundry');
 
-    bot.start((ctx) => ctx.reply('Welcome to Victoria from Node.js!'));
+/*
+    bot.onText(/\/send (.+)/, (msg, match) => {
 
-//    bot.help((ctx) => ctx.reply('Send me a sticker from Node.js!'))
-//    bot.on('sticker', (ctx) => ctx.reply('👍'))
-//    bot.hears('hi', (ctx) => ctx.reply('Hey there from Node.js!'))
-    bot.launch();
+
+        const chatId = msg.chat.id;
+        const resp = match[1];
+
+        // bot.sendMessage(CHANNEL_ID, 'your message');
+        bot.sendMessage('-1001410454880', '11wwwПолучили сообщение. '+msg.chat.id.toString());
+        bot.sendMessage(chatId, resp);
+    });
+
+
+    bot.on('message', (msg) => {
+        const chatId = msg.chat.id;
+
+        bot.sendMessage('-1001410454880', '22wwwПолучили сообщение. '+msg.chat.id.toString());
+        bot.sendMessage(chatId, 'Получили сообщение. '+msg.chat.id.toString());
+
+    });
+*/
+
+    // bot.sendMessage('79312501669', 'мегатест');
+    // bot.sendMessage('-1001410454880', 'левый текст');
 
 }
 

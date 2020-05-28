@@ -276,11 +276,11 @@ async function asyncUpdateMessage(id_message, id_user, summa, comment_response, 
 }
 
 
-async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_instruction) {
+async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_instruction, id_parent) {
     const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, " +
                                  " data_situation, data_solution, summa, " +
-                                  " result_response, date_from) " +
-                 " values (?,?,?,?,?,?,?,?,?, now())";
+                                  " result_response, date_from, id_parent) " +
+                 " values (?,?,?,?,?,?,?,?,?, now(), ?)";
 
     let int_response = 0;
     if (int_instruction === 1) {
@@ -294,7 +294,10 @@ async function asyncNewMessage(id_user_from, id_position_from, id_position_to, i
         data_situation = data_situation.replace(/[']/g, "\'");
 
         conn = await pool.getConnection();
-        const rows = await conn.query(sSQL, [id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_response]);
+        const rows = await conn.query(sSQL, [id_user_from, id_position_from,
+                                                    id_position_to, id_branch, situation,
+                                                    data_situation, data_solution, summa,
+                                                    int_response, id_parent]);
 
                        // вставляем отправителя в прочитавшие письмо
                        if (rows.insertId) {
@@ -321,7 +324,8 @@ router.post('/', async function(req, res) {
                                              req.body.data_situation,
                                              req.body.data_solution,
                                              req.body.summa,
-                                             req.body.int_instruction);
+                                             req.body.int_instruction,
+                                             req.body.id_parent);
 
         res.send(result);
     }

@@ -14,6 +14,7 @@ var validators = require('./routes/validators');
 var report = require('./routes/report');
 var payment = require('./routes/payment');
 var comment = require('./routes/comment');
+var telegraph = require('./routes/telegraph');
 
 var app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -45,6 +46,8 @@ app.use('/validators', validators);
 app.use('/report', report);
 app.use('/payment', payment);
 app.use('/comment', comment);
+app.use('/telegraph', telegraph);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

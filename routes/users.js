@@ -412,19 +412,6 @@ async function asyncUserPostPassword(password, id_user) {
 
 
 async function asyncUserUpdate(user, id_user) {
-/*
-    update_user: 'update_user',
-        inputName: 'Виталий', name
-        inputLastName: 'Клипач',surname
-        inputPatronymic: 'Степанович',patronymic
-        inputZip: '2343434',zip
-        inputAddress: '23232342424',address
-        inputPhone: '1234',phone1
-        inputPhone2: '7890',phone2
-        inputEmail: 'klipach1@mail.ru1',email
-        gender: 1,gender
-        date: 1582848000000,datebirth
-*/
 
     let conn;
     try {
