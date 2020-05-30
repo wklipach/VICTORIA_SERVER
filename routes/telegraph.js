@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+
+
+/*
 const TelegramBot = require('node-telegram-bot-api');
 const Agent = require('socks5-https-client/lib/Agent');
 const token =  "1175492418:AAHGyI3UO-DhxY0HUncwmyLxn3tUewxzY7s";
@@ -13,11 +16,12 @@ const bot = new TelegramBot( token, {
         }
     }
 });
+ */
 
 router.get('/', async function(req, res, next) {
 
     if (req.query.send_text) {
-        sendToTelegramm(req.query.nick, req.query.message);
+      //  sendToTelegramm(req.query.nick, req.query.message);
         res.send('true');
     }
 

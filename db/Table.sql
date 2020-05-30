@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.acceptance_laundry: ~12 rows (приблизительно)
+-- Дамп данных таблицы victoria.acceptance_laundry: ~13 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry` DISABLE KEYS */;
 INSERT INTO `acceptance_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 6, '2020-05-21 13:55:58', 1),
@@ -42,7 +42,8 @@ INSERT INTO `acceptance_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_ad
 	(9, 37, 5, '2020-05-21 14:05:03', 4),
 	(10, 37, 5, '2020-05-21 14:06:01', 4),
 	(11, 37, 6, '2020-05-21 16:08:44', 6),
-	(12, 38, 0, '2020-05-27 23:31:34', 6);
+	(12, 38, 0, '2020-05-27 23:31:34', 6),
+	(13, 38, 2, '2020-05-30 21:57:39', 1);
 /*!40000 ALTER TABLE `acceptance_laundry` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.acceptance_laundry_detail
@@ -54,9 +55,9 @@ CREATE TABLE IF NOT EXISTS `acceptance_laundry_detail` (
   `quant` int(11) NOT NULL,
   `bitspoiled` bit(1) NOT NULL DEFAULT b'0',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.acceptance_laundry_detail: ~24 rows (приблизительно)
+-- Дамп данных таблицы victoria.acceptance_laundry_detail: ~25 rows (приблизительно)
 /*!40000 ALTER TABLE `acceptance_laundry_detail` DISABLE KEYS */;
 INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `bitspoiled`) VALUES
 	(11, 1, 1, 1, b'0'),
@@ -82,7 +83,8 @@ INSERT INTO `acceptance_laundry_detail` (`id`, `id_accept`, `id_nom`, `quant`, `
 	(37, 11, 1, 2, b'0'),
 	(38, 11, 2, 1, b'0'),
 	(40, 12, 1, 7, b'0'),
-	(41, 12, 2, 7, b'0');
+	(41, 12, 2, 7, b'0'),
+	(43, 13, 1, 2, b'0');
 /*!40000 ALTER TABLE `acceptance_laundry_detail` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.addwork_laundry
@@ -316,10 +318,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_login`(
 	IN `@name` TINYTEXT
 
 
+
+
 )
 BEGIN
  
-SELECT u.*, count(tub.id_user) as CountBranch 
+SELECT u.*, count(tub.id_user) as CountBranch, cast(ifnull(u.flagadmin,0) as int) as editor  
 FROM tuser u left join tuserbranch tub on tub.id_user = u.id
 where ifnull(u.bitdelete,0)=0 and (u.nick=`@name` or u.email=`@name`);
 
@@ -881,17 +885,40 @@ CREATE TABLE IF NOT EXISTS `message` (
   `id_user_response` int(11) DEFAULT NULL,
   `comment_response` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `flagdelete` bit(1) DEFAULT b'0',
+  `id_parent` int(11) DEFAULT NULL,
+  `link_video` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message: ~5 rows (приблизительно)
+-- Дамп данных таблицы victoria.message: ~26 rows (приблизительно)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
-INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `id_position_to`, `id_branch`, `situation`, `data_situation`, `data_solution`, `summa`, `result_response`, `bit_response`, `date_response`, `id_user_response`, `comment_response`, `flagdelete`) VALUES
-	(157, 6, 1, '2020-05-11 00:13:36', 2, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', NULL, 2950, 2, b'1', '2020-05-15 13:31:50', 1, 'тут отказ', b'0'),
-	(158, 6, 1, '2020-05-11 00:20:24', 2, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', NULL, 1000, 1, b'1', '2020-05-15 13:31:33', 1, '', b'0'),
-	(159, 1, 2, '2020-05-11 00:25:15', 1, 3, 'Инструкция о включении стиральной машины.', 'Подробности на фото.', NULL, 0, 3, NULL, NULL, NULL, NULL, b'0'),
-	(162, 1, 2, '2020-05-19 20:06:29', 1, 3, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', 'kkkkkkkkkkkkkkkkkkkkkkkkkkk', 'lllllllllllllllllllllllllllllllllllllll', 999, 0, NULL, NULL, NULL, NULL, b'0'),
-	(163, 1, 2, '2020-05-19 21:14:22', 1, 3, '11111', '22222', '33333', 0, 3, NULL, NULL, NULL, NULL, b'0');
+INSERT INTO `message` (`id`, `id_user_from`, `id_position_from`, `date_from`, `id_position_to`, `id_branch`, `situation`, `data_situation`, `data_solution`, `summa`, `result_response`, `bit_response`, `date_response`, `id_user_response`, `comment_response`, `flagdelete`, `id_parent`, `link_video`) VALUES
+	(157, 6, 1, '2020-05-11 00:13:36', 2, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', NULL, 2950, 2, b'1', '2020-05-15 13:31:50', 1, 'тут отказ', b'0', NULL, NULL),
+	(158, 6, 1, '2020-05-11 00:20:24', 2, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', NULL, 1000, 1, b'1', '2020-05-15 13:31:33', 1, '', b'0', NULL, NULL),
+	(159, 1, 2, '2020-05-11 00:25:15', 1, 3, 'Инструкция о включении стиральной машины.', 'Подробности на фото.', NULL, 0, 3, NULL, NULL, NULL, NULL, b'0', NULL, NULL),
+	(162, 1, 2, '2020-05-19 20:06:29', 1, 3, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', 'kkkkkkkkkkkkkkkkkkkkkkkkkkk', 'lllllllllllllllllllllllllllllllllllllll', 999, 0, NULL, NULL, NULL, NULL, b'0', NULL, NULL),
+	(163, 1, 2, '2020-05-19 21:14:22', 1, 3, '11111', '22222', '33333', 0, 3, NULL, NULL, NULL, NULL, b'0', NULL, NULL),
+	(164, 1, 2, '2020-05-28 17:53:26', 1, 3, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', 'kkkkkkkkkkkkkkkkkkkkkkkkkkk', 'lllllllllllllllllllllllllllllllllllllll', 999, 0, NULL, NULL, NULL, NULL, b'0', 162, NULL),
+	(165, 1, 2, '2020-05-28 17:58:12', 1, 3, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', 'kkkkkkkkkkkkkkkkkkkkkkkkkkk', 'lllllllllllllllllllllllllllllllllllllll', 999, 0, NULL, NULL, NULL, NULL, b'0', 162, NULL),
+	(166, 1, 2, '2020-05-28 18:10:36', 5, 3, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', 'kkkkkkkkkkkkkkkkkkkkkkkkkkk', 'lllllllllllllllllllllllllllllllllllllll', 999, 0, NULL, NULL, NULL, NULL, b'0', 162, NULL),
+	(167, 1, 2, '2020-05-28 18:23:56', 1, 3, 'wwwwwwwwwwwwwwwwwwwwwwww', 'ccccccccccccc', 'cccc', 9, 0, NULL, NULL, NULL, NULL, b'0', -1, NULL),
+	(168, 1, 2, '2020-05-28 18:27:00', 1, 3, 'mmm', 'mmm', 'mmm', 9, 0, NULL, NULL, NULL, NULL, b'0', -1, NULL),
+	(169, 1, 2, '2020-05-28 18:34:44', 1, 3, 'ggg', 'gggg', 'ggg', 88, 0, NULL, NULL, NULL, NULL, b'0', -1, NULL),
+	(170, 1, 2, '2020-05-28 18:51:57', 1, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', '1111111', 1000, 0, NULL, NULL, NULL, NULL, b'0', 158, NULL),
+	(171, 1, 2, '2020-05-28 18:53:47', 1, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', '1111111', 1000, 0, NULL, NULL, NULL, NULL, b'0', 158, NULL),
+	(172, 1, 2, '2020-05-28 19:59:47', 1, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', 'Переслано смотрим решение', 2950, 0, NULL, NULL, NULL, NULL, b'0', 157, NULL),
+	(173, 1, 2, '2020-05-28 20:10:56', 1, 3, 'Инструкция без картинок1', 'Инструкция без картинок1', 'Инструкция без картинок1', 0, 0, NULL, NULL, NULL, NULL, b'0', -1, NULL),
+	(174, 1, 2, '2020-05-28 20:11:29', 1, 3, 'Инструкция без картинок11', 'Инструкция без картинок11', 'Инструкция без картинок11', 0, 0, NULL, NULL, NULL, NULL, b'0', 173, NULL),
+	(175, 1, 2, '2020-05-28 20:12:06', 1, 3, 'и с к', 'и с к', 'и с к', 0, 0, NULL, NULL, NULL, NULL, b'0', -1, NULL),
+	(176, 1, 2, '2020-05-28 20:12:47', 1, 3, 'и с к', 'и с к', 'и с к', 0, 0, NULL, NULL, NULL, NULL, b'0', 175, NULL),
+	(177, 1, 2, '2020-05-28 20:13:52', 1, 3, 'инстр2', 'инстр2', 'инстр2', 0, 3, NULL, NULL, NULL, NULL, b'0', -1, '22222222'),
+	(178, 1, 2, '2020-05-29 12:13:03', 3, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', '1111111', 1000, 0, NULL, NULL, NULL, NULL, b'0', 170, NULL),
+	(179, 1, 2, '2020-05-29 12:33:09', 1, 3, 'Не включается стиральная машина', 'Сломалась розетка и оборван шнур. На починку 500 руб материалы и 500 руб электрику. Итого 1000 руб.', '1111111', 1000, 0, NULL, NULL, NULL, NULL, b'0', 178, NULL),
+	(180, 1, 2, '2020-05-29 12:34:23', 1, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', '77777777777777777777', 2950, 0, NULL, NULL, NULL, NULL, b'0', 157, NULL),
+	(181, 1, 2, '2020-05-29 12:53:39', 3, 3, 'Выбили дверь в прачечную.', 'Во время праздников сломали дверь.  Замок выломан. Фото прилагаю Прошу выделить 2350 рублей на починку и 600 слесарю как гонорар. Итого 2950', '77777777777777777777', 2950, 0, NULL, NULL, NULL, NULL, b'0', 180, NULL),
+	(182, 1, 2, '2020-05-30 20:45:26', 1, 3, 'Пробная инструкция без видео', 'Пробная инструкция без видео', 'Пробная инструкция без видео', 0, 3, NULL, NULL, NULL, NULL, b'0', -1, ''),
+	(183, 1, 2, '2020-05-30 20:46:29', 1, 3, 'Пробная инструкция С видео', 'Пробная инструкция С видео', 'Пробная инструкция С видео', 0, 3, NULL, NULL, NULL, NULL, b'0', -1, 'https://www.youtube.com/watch?v=R4RhgBJpXSQ'),
+	(184, 1, 2, '2020-05-30 20:48:04', 1, 3, 'пробная записка после ВИДЕО', 'пробная записка после ВИДЕО', 'пробная записка после ВИДЕО', 300, 0, NULL, NULL, NULL, NULL, b'0', -1, '');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_image
@@ -901,9 +928,9 @@ CREATE TABLE IF NOT EXISTS `message_image` (
   `id_message` int(11) DEFAULT NULL,
   `name` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message_image: ~9 rows (приблизительно)
+-- Дамп данных таблицы victoria.message_image: ~37 rows (приблизительно)
 /*!40000 ALTER TABLE `message_image` DISABLE KEYS */;
 INSERT INTO `message_image` (`id`, `id_message`, `name`) VALUES
 	(62, 157, '157_1.jpg'),
@@ -916,7 +943,33 @@ INSERT INTO `message_image` (`id`, `id_message`, `name`) VALUES
 	(68, 159, '159_1.jpg'),
 	(70, 159, '159_2.jpg'),
 	(71, 162, '162_1.bmp'),
-	(72, 163, '163_1.bmp');
+	(72, 163, '163_1.bmp'),
+	(73, 164, '164_1.bmp'),
+	(74, 164, '164_1.bmp'),
+	(75, 165, '165_1.bmp'),
+	(76, 165, '165_1.bmp'),
+	(77, 166, '166_1.bmp'),
+	(78, 166, '166_1.bmp'),
+	(79, 167, '167_1.jpg'),
+	(80, 170, '170_1.jpg'),
+	(81, 170, '170_3.jpg'),
+	(82, 170, '170_2.jpg'),
+	(83, 171, '171_1.jpg'),
+	(84, 170, '170_1.jpg'),
+	(85, 170, '170_2.jpg'),
+	(86, 170, '170_3.jpg'),
+	(87, 172, '172_1.jpg'),
+	(89, 172, '172_2.jpg'),
+	(88, 172, '172_3.jpg'),
+	(90, 175, '175_1.jpg'),
+	(91, 176, '176_1.jpg'),
+	(92, 176, '176_2.bmp'),
+	(93, 180, '180_1.jpg'),
+	(94, 180, '180_2.jpg'),
+	(95, 180, '180_3.jpg'),
+	(96, 181, '181_1.jpg'),
+	(97, 181, '181_2.jpg'),
+	(98, 181, '181_3.jpg');
 /*!40000 ALTER TABLE `message_image` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.message_read
@@ -926,12 +979,37 @@ CREATE TABLE IF NOT EXISTS `message_read` (
   `id_message` bigint(20) DEFAULT NULL,
   `id_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.message_read: ~1 rows (приблизительно)
+-- Дамп данных таблицы victoria.message_read: ~26 rows (приблизительно)
 /*!40000 ALTER TABLE `message_read` DISABLE KEYS */;
 INSERT INTO `message_read` (`id`, `id_message`, `id_user`) VALUES
-	(51, 163, 1);
+	(51, 163, 1),
+	(52, 162, 1),
+	(53, 158, 1),
+	(54, 164, 1),
+	(55, 165, 1),
+	(56, 166, 1),
+	(57, 167, 1),
+	(58, 168, 1),
+	(59, 169, 1),
+	(60, 159, 1),
+	(61, 170, 1),
+	(62, 171, 1),
+	(63, 157, 1),
+	(64, 172, 1),
+	(65, 173, 1),
+	(66, 174, 1),
+	(67, 175, 1),
+	(68, 176, 1),
+	(69, 177, 1),
+	(70, 178, 1),
+	(71, 179, 1),
+	(72, 180, 1),
+	(73, 181, 1),
+	(74, 182, 1),
+	(75, 183, 1),
+	(76, 184, 1);
 /*!40000 ALTER TABLE `message_read` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.payment_laundry
@@ -966,7 +1044,7 @@ CREATE TABLE IF NOT EXISTS `repair_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.repair_laundry: ~2 rows (приблизительно)
+-- Дамп данных таблицы victoria.repair_laundry: ~3 rows (приблизительно)
 /*!40000 ALTER TABLE `repair_laundry` DISABLE KEYS */;
 INSERT INTO `repair_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 5, '2020-05-21 14:06:17', 4),
@@ -984,7 +1062,7 @@ CREATE TABLE IF NOT EXISTS `repair_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.repair_laundry_detail: ~2 rows (приблизительно)
+-- Дамп данных таблицы victoria.repair_laundry_detail: ~3 rows (приблизительно)
 /*!40000 ALTER TABLE `repair_laundry_detail` DISABLE KEYS */;
 INSERT INTO `repair_laundry_detail` (`id`, `id_repair`, `id_nom`, `quant`) VALUES
 	(2, 1, 11, 4),
@@ -1084,6 +1162,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `select_payment_graph`(
 	IN `var_type` INT
 
 
+
 )
 BEGIN
 
@@ -1126,7 +1205,7 @@ cast(date_begin as date) between t_date_begin and t_date_end
  
 /* дополнительная оплата за эти смены */ 
 CREATE TEMPORARY TABLE tmp_addwork AS ( 
-select a.id_shift, round(sum(adl.quant*ttt.price/60*t_price),0) as summa_add 
+select a.id_shift, round(sum(adl.quant*ttt.price/60*t_price),0) as summa_add, round(sum(adl.quant),0) as rating_add 
 from addwork_laundry_detail adl, laundry_add_work l, addwork_laundry a, shift s, taddworkbranch ttt  
 where adl.id_addwork=l.id and a.id=adl.id_addwork_laundry and a.id_shift in (select id_shift from tmp_userwork)
 and s.id=a.id_shift and ttt.id_branch=s.id_branch and ttt.id_addwork=adl.id_addwork
@@ -1139,7 +1218,8 @@ select             date_shift,
 						 sum(RoundedTime) as rounded_time, 
                    sum(ExactTime) as exact_time, 
 						 max(price_position) as price_position, 
-						 sum(ifnull(summa_add,0)) as summa_add
+						 sum(ifnull(summa_add,0)) as summa_add,
+						 sum(ifnull(rating_add,0)) as rating_add						 
 						 from tmp_userwork u left join tmp_addwork a on a.id_shift=u.id_shift
 group by date_shift
 );
@@ -1148,7 +1228,7 @@ group by date_shift
 /* годичный по месяцам */
 
 if var_type = 3 then 
-SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa
+SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa, sum(exact_time)+sum(rating_add) as rating
   FROM tmp_graph
   GROUP BY month(date_shift);
 end if;
@@ -1157,7 +1237,7 @@ end if;
 /* квартальный по неделям */
 
 if var_type = 2 then 
-SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa
+SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa, sum(exact_time)+sum(rating_add) as rating
   FROM tmp_graph
   group by week(date_shift, 3);
 end if;
@@ -1166,7 +1246,7 @@ end if;
 /* месячный по дням */
 
 if var_type = 1 then 
-SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa
+SELECT max(date_shift) as date_shift, sum(price_position*rounded_time)+sum(summa_add) as summa, sum(exact_time)+sum(rating_add) as rating
   FROM tmp_graph
   group by day(date_shift);
 end if;
@@ -1315,6 +1395,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `select_pie`(
 
 
 
+
+
+
 )
 BEGIN
 
@@ -1381,6 +1464,27 @@ end if;
 
 /*  --расходы */
 if var_type = 6 then
+
+drop table if exists tmp_minus; 
+
+CREATE TEMPORARY TABLE tmp_minus AS (
+
+SELECT max(det.quant) as massa, lad.name as address, lad.id as id_address
+FROM addwork_laundry d, 
+	  shift s, 
+	  addwork_spend_detail det,
+	  laundry_add_work lad 
+WHERE det.id_addwork_laundry = d.id 
+      and  s.id=d.id_shift 
+      and lad.id = det.id_addwork
+      and DATE(d.date_oper)<=str_to_date(left(var_db1,10), '%Y-%m-%d')
+      and s.id_branch= var_id_branch
+group by det.id_addwork); 
+
+
+
+drop table if exists tmp_plus;
+CREATE TEMPORARY TABLE tmp_plus AS (
 SELECT sum(det.quant) as massa, lad.name as address, lad.id as id_address
 FROM addwork_laundry d, 
 	  shift s, 
@@ -1389,11 +1493,20 @@ FROM addwork_laundry d,
 WHERE det.id_addwork_laundry = d.id 
       and  s.id=d.id_shift 
       and lad.id = det.id_addwork
-      and DATE(d.date_oper)>=DATE(var_db1) and DATE(d.date_oper)<=DATE(var_db2)
+      and DATE(d.date_oper)<=str_to_date(left(var_db2,10), '%Y-%m-%d')
       and s.id_branch= var_id_branch
-group by det.id_addwork;
-end if;
+group by det.id_addwork);
 
+
+
+select (ifnull(p.massa,0)-ifnull(m.massa,0)) as massa, p.address, p.id_address 
+from tmp_plus p 
+left join tmp_minus m 
+on p.id_address=m.id_address;
+
+
+
+end if;
 
 
 END//
@@ -1839,19 +1952,20 @@ CREATE TABLE IF NOT EXISTS `tuser` (
   `bitdelete` bit(1) DEFAULT NULL,
   `gender` bit(1) DEFAULT NULL,
   `zip` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `flagadmin` bit(1) DEFAULT NULL,
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='список пользователей';
 
 -- Дамп данных таблицы victoria.tuser: ~7 rows (приблизительно)
 /*!40000 ALTER TABLE `tuser` DISABLE KEYS */;
-INSERT INTO `tuser` (`id`, `nick`, `password`, `email`, `surname`, `name`, `patronymic`, `datebirth`, `address`, `phone1`, `phone2`, `avatar_name`, `comment`, `bitdelete`, `gender`, `zip`) VALUES
-	(1, 'Администратор', '4b13a4b1b2059c8820abc38b375fa03de5eb54d7664993266731069459eae11f', 'klipach@mail.ru', 'Клипач', 'Виталий', 'Степанович', '1974-04-09 00:00:00', 'адрес какой то', 'т1', 'т2', '1_1588694991731.jpg', NULL, NULL, b'1', '123'),
-	(2, 'Прачечная', '6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918', 'klipach1@mail.ru', 'Сергеев', 'Вячеслав', 'Иванович', NULL, 'Северный 21', '', '', NULL, NULL, NULL, b'1', ''),
-	(3, 'Тренер', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'Employee_1@mail.ru', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, b'1', NULL, NULL),
-	(4, 'Тест1_1', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'k@mail.ru', '', 'Тест1_1', 'Тест1_1', NULL, '', '', '', NULL, NULL, NULL, b'1', ''),
-	(5, 'Тест1_2', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'l@mail.ru', 'Тест1_2', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', ''),
-	(6, 'Тест3_1', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'm@mail.ru', 'Тест3_1', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', ''),
-	(7, 'Тест3_2', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'n@mail.ru', 'Тест3_2', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', '');
+INSERT INTO `tuser` (`id`, `nick`, `password`, `email`, `surname`, `name`, `patronymic`, `datebirth`, `address`, `phone1`, `phone2`, `avatar_name`, `comment`, `bitdelete`, `gender`, `zip`, `flagadmin`) VALUES
+	(1, 'Администратор', '4b13a4b1b2059c8820abc38b375fa03de5eb54d7664993266731069459eae11f', 'klipach@mail.ru', 'Клипач', 'Виталий', 'Степанович', '1974-04-09 00:00:00', 'адрес какой то', 'т1', 'т2', '1_1588694991731.jpg', NULL, NULL, b'1', '123', b'1'),
+	(2, 'Прачечная', '6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918', 'klipach1@mail.ru', 'Сергеев', 'Вячеслав', 'Иванович', NULL, 'Северный 21', '', '', NULL, NULL, NULL, b'1', '', NULL),
+	(3, 'Тренер', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'Employee_1@mail.ru', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, b'1', NULL, NULL, NULL),
+	(4, 'Тест1_1', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'k@mail.ru', '', 'Тест1_1', 'Тест1_1', NULL, '', '', '', NULL, NULL, NULL, b'1', '', NULL),
+	(5, 'Тест1_2', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'l@mail.ru', 'Тест1_2', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', '', NULL),
+	(6, 'Тест3_1', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'm@mail.ru', 'Тест3_1', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', '', b'0'),
+	(7, 'Тест3_2', '4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8', 'n@mail.ru', 'Тест3_2', '', '', NULL, '', '', '', NULL, NULL, NULL, b'1', '', NULL);
 /*!40000 ALTER TABLE `tuser` ENABLE KEYS */;
 
 -- Дамп структуры для таблица victoria.tuserbranch
@@ -1943,7 +2057,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.warehouse_laundry: ~8 rows (приблизительно)
+-- Дамп данных таблицы victoria.warehouse_laundry: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `warehouse_laundry` DISABLE KEYS */;
 INSERT INTO `warehouse_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 2, '2020-05-21 14:13:44', 5),
@@ -1969,7 +2083,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.warehouse_laundry_detail: ~17 rows (приблизительно)
+-- Дамп данных таблицы victoria.warehouse_laundry_detail: ~20 rows (приблизительно)
 /*!40000 ALTER TABLE `warehouse_laundry_detail` DISABLE KEYS */;
 INSERT INTO `warehouse_laundry_detail` (`id`, `id_warehouse`, `id_nom`, `quant`, `bitadd`) VALUES
 	(273, 1, 3, 2, b'1'),
@@ -2005,7 +2119,7 @@ CREATE TABLE IF NOT EXISTS `washing_laundry` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.washing_laundry: ~5 rows (приблизительно)
+-- Дамп данных таблицы victoria.washing_laundry: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `washing_laundry` DISABLE KEYS */;
 INSERT INTO `washing_laundry` (`id`, `id_shift`, `massa`, `date_oper`, `id_address`) VALUES
 	(1, 37, 6, '2020-05-21 14:10:04', 1),
@@ -2026,7 +2140,7 @@ CREATE TABLE IF NOT EXISTS `washing_laundry_detail` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Дамп данных таблицы victoria.washing_laundry_detail: ~12 rows (приблизительно)
+-- Дамп данных таблицы victoria.washing_laundry_detail: ~13 rows (приблизительно)
 /*!40000 ALTER TABLE `washing_laundry_detail` DISABLE KEYS */;
 INSERT INTO `washing_laundry_detail` (`id`, `id_washing`, `id_nom`, `quant`) VALUES
 	(266, 1, 1, 2),

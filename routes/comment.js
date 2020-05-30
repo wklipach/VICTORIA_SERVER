@@ -55,7 +55,8 @@ async function asyncMessageImageList(id_message) {
 async function asyncMessage(id_message) {
     const sSQL =
         " select m.id, m.date_from, m.id_position_to,  m.id_branch, m.situation, m.data_situation,  m.data_solution, m.summa, "+
-        " b.name as branch_name, p.name as position_name, ifnull(m.result_response, 0) as result_response, m.comment_response "+
+        " b.name as branch_name, p.name as position_name, ifnull(m.result_response, 0) as result_response, m.comment_response, "+
+        " ifnull(m.link_video,'') as link_video "+
         " from message m "+
         " left join tposition p on p.id=m.id_position_to "+
         " left join tbranch b on b.id = m.id_branch "+
@@ -276,11 +277,11 @@ async function asyncUpdateMessage(id_message, id_user, summa, comment_response, 
 }
 
 
-async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, summa, int_instruction, id_parent) {
+async function asyncNewMessage(id_user_from, id_position_from, id_position_to, id_branch, situation, data_situation, data_solution, link_video, summa, int_instruction, id_parent) {
     const sSQL = "insert message (id_user_from, id_position_from, id_position_to, id_branch, situation, " +
-                                 " data_situation, data_solution, summa, " +
+                                 " data_situation, data_solution, link_video, summa, " +
                                   " result_response, date_from, id_parent) " +
-                 " values (?,?,?,?,?,?,?,?,?, now(), ?)";
+                 " values (?,?,?,?,?,?,?,?,?, ?, now(), ?)";
 
     let int_response = 0;
     if (int_instruction === 1) {
@@ -296,7 +297,7 @@ async function asyncNewMessage(id_user_from, id_position_from, id_position_to, i
         conn = await pool.getConnection();
         const rows = await conn.query(sSQL, [id_user_from, id_position_from,
                                                     id_position_to, id_branch, situation,
-                                                    data_situation, data_solution, summa,
+                                                    data_situation, data_solution, link_video, summa,
                                                     int_response, id_parent]);
 
                        // вставляем отправителя в прочитавшие письмо
@@ -323,6 +324,7 @@ router.post('/', async function(req, res) {
                                              req.body.situation,
                                              req.body.data_situation,
                                              req.body.data_solution,
+                                             req.body.video_link,
                                              req.body.summa,
                                              req.body.int_instruction,
                                              req.body.id_parent);
