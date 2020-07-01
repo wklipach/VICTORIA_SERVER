@@ -16,12 +16,14 @@ const bot = new TelegramBot( token, {
         }
     }
 });
- */
+
+*/
+
 
 router.get('/', async function(req, res, next) {
 
     if (req.query.send_text) {
-      //  sendToTelegramm(req.query.nick, req.query.message);
+        // sendToTelegramm(req.query.nick, req.query.message);
         res.send('true');
     }
 

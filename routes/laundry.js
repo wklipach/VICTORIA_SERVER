@@ -233,26 +233,27 @@ async function asyncLastWarehouse(id_user, id_branch) {
 
 async function asyncLastAddWork(id_user, id_branch) {
     const sSQL =
+
         " SELECT u.nick, "+
-        "    u.surname, "+
-        "    u.name AS usernane, "+
-        "    u.patronymic, "+
-        "    b.name AS branchname, "+
-        "    sh.date_begin AS shiftdate, "+
-        "    al.date_oper, "+
-        "    al.id " +
-        " FROM addwork_laundry al, shift sh, tuser u, tbranch b "+
-        " WHERE al.date_oper = (SELECT MAX(date_oper) from addwork_laundry where id in "+
-        " (SELECT id_addwork_laundry FROM addwork_laundry_detail)) "+
-        " AND sh.id=al.id_shift "+
-        " AND "+
-        " u.id = sh.id_user "+
-        " AND "+
-        " b.id=sh.id_branch "+
-        " and "+
-        " sh.id_user=? "+
-        " and "+
-        " sh.id_branch=? ";
+        " u.surname, "+
+        " u.name AS usernane, "+
+        " u.patronymic, "+
+        " b.name AS branchname, "+
+        " sh.date_begin AS shiftdate, "+
+        " al.date_oper, "+
+        " al.id "+
+    " FROM addwork_laundry al, shift sh, tuser u, tbranch b "+
+    " WHERE "+
+    " sh.id=al.id_shift "+
+    " AND "+
+    " u.id = sh.id_user "+
+    " AND "+
+    " b.id=sh.id_branch "+
+    " and "+
+    " sh.id_user = ? "+
+    " and "+
+    " sh.id_branch = ? "+
+    " order by al.date_oper desc limit 1 ";
 
     let conn;
     try {

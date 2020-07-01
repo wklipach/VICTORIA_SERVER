@@ -314,6 +314,21 @@ async function asyncNewMessage(id_user_from, id_position_from, id_position_to, i
 }
 
 
+
+async function asyncApplyMessage(id_message, id_user) {
+    const sSQL = " update message_read set apply=1 where id_message=? and id_user=? ";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_message, id_user]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
 router.post('/', async function(req, res) {
 
     if (req.body.insert_new_message) {
@@ -338,7 +353,10 @@ router.post('/', async function(req, res) {
         res.send(result);
     }
 
-
+    if (req.body.apply_message) {
+        const result = await asyncApplyMessage(req.body.id_message, req.body.id_user);
+        res.send(result);
+    }
 
 
     if (req.body.update_message) {

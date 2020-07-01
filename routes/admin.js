@@ -129,8 +129,9 @@ async function asyncGetPosition(id_branch) {
 async function asyncGetUniqueNick(id_user, nick) {
     let conn;
     try {
+
         conn = await pool.getConnection();
-        let sql ="select count(id) as res  from tuser where id<> ? and nick = ? ";
+        let sql ="select count(id) as res  from tuser where id<> ? and nick = ? and ifnull(bitdelete,0)=0";
         const rows = await conn.query(sql, [id_user, nick]);
         return JSON.stringify(rows);
     } catch (err) {

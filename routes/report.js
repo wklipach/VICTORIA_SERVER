@@ -17,6 +17,7 @@ async function asyncAddress(id_address) {
 }
 
 async function asyncSelectPie(id_branch, var_date1, var_date2, inttype) {
+
     const sSQL = "call select_pie (?, ?, ?, ?)";
     let conn;
     try {
