@@ -329,6 +329,21 @@ async function asyncApplyMessage(id_message, id_user) {
     }
 }
 
+async function asyncPostponMessage(id_message, id_user) {
+    const sSQL = " update message_read set postpon=1 where id_message=? and id_user=? ";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(sSQL, [id_message, id_user]);
+        return JSON.stringify(rows);
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release(); //release to pool
+    }
+}
+
+
 router.post('/', async function(req, res) {
 
     if (req.body.insert_new_message) {
@@ -355,6 +370,11 @@ router.post('/', async function(req, res) {
 
     if (req.body.apply_message) {
         const result = await asyncApplyMessage(req.body.id_message, req.body.id_user);
+        res.send(result);
+    }
+
+    if (req.body.postpon_message) {
+        const result = await asyncPostponMessage(req.body.id_message, req.body.id_user);
         res.send(result);
     }
 
